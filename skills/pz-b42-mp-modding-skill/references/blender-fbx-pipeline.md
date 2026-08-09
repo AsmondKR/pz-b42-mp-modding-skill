@@ -70,15 +70,45 @@ Before choosing scene scale or orientation:
 1. Run `scripts/plan_pz_fbx_reference.py` for an exact same-role vanilla FBX.
 2. Review and execute the emitted Blender command without editing it.
 3. Record build, branch, relative FBX path, file hash, encoding, FBX axes and units,
-   measurement space, bounds, and matching model-script transform.
+   measurement space, mesh-local geometry dimensions, imported bounds, and matching
+   model-script transform.
 4. Import binary references into a clean Blender comparison scene and exclude them from
    export.
-5. Keep raw/imported bounds, FBX unit metadata, Blender object scale, model-script
+5. Keep mesh-local geometry dimensions, raw/imported bounds, FBX unit metadata, Blender
+   object scale, model-script
    `scale`, attachment transforms, and `undoCoreScale` separate.
 
 Never multiply those values into runtime metres without an in-game measurement. Never
 copy one profile's front axis into another profile: current shipped observations already
 contain both `Front -X / Coord +Z` and `Front +Z / Coord +X`.
+
+### Held tool and weapon size
+
+PZ weapon editing geometry can be visually tiny in Blender. That is not, by itself, a
+broken import and it is not evidence that Blender's FBX `Global Scale` should change.
+
+- In public Build `24574865`, shipped `weapons/1handed/Machete.x` has a raw mesh envelope
+  of approximately `0.009428 x 0.334505 x 0.056614`; its model declaration has no
+  `scale`, so the script default is `1`.
+- Shipped `weapons/Floor_FBX/ButterflyKnife_Closed.fbx` has a raw geometry envelope of
+  approximately `10.087231 x 3.268965 x 0.566537`, while its model declaration applies
+  `scale = 0.01`. The script-scaled source-coordinate envelope is therefore approximately
+  `0.100872 x 0.032690 x 0.005665`.
+- The common `0.01` weapon workflow is a one-time geometry/conversion correction or a
+  model-script transform. It is not a universal FBX unit-metadata rule. Converted legacy
+  `.x` references are frequently 100 times too large until that correction is applied.
+
+For a held/tool/weapon asset, match one named vanilla reference's raw geometry together
+with that same reference's model-script transform. If the pair proves a 100:1 conversion
+is required, choose exactly one correction layer:
+
+- preserve the larger geometry and use model-script `scale = 0.01`; or
+- duplicate the authored mesh into an export collection, bake `0.01`, apply transforms so
+  the export object is back at `(1, 1, 1)`, and use model-script scale `1`.
+
+Keep the checked-in FBX exporter at `Global Scale = 1.0`; do not combine baked `0.01`,
+exporter `0.01`, and model-script `scale = 0.01`. Round-trip validation must preserve the
+chosen export geometry.
 
 ## Manifest
 

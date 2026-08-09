@@ -243,6 +243,7 @@ def _mesh_record(item: ProbeObject) -> dict[str, object]:
     item.data.calc_loop_triangles()
     return {
         "dimensions": list(_rounded_vector(item.dimensions)),
+        "geometry_dimensions": list(geometry_dimensions(item.bound_box)),
         "location": list(_rounded_vector(item.location)),
         "name": item.name,
         "rotation_degrees": list(
@@ -251,6 +252,23 @@ def _mesh_record(item: ProbeObject) -> dict[str, object]:
         "scale": list(_rounded_vector(item.scale)),
         "triangle_count": len(item.data.loop_triangles),
     }
+
+
+def geometry_dimensions(
+    bound_box: Sequence[Sequence[float]],
+) -> tuple[float, float, float]:
+    """Measure mesh-local geometry before object transforms or FBX unit scale."""
+    if not bound_box:
+        raise FbxReferenceError(FbxReferenceErrorCode.GEOMETRY_MISSING, "bound_box")
+    for corner in bound_box:
+        if len(corner) != VECTOR_COMPONENT_COUNT:
+            raise FbxReferenceError(FbxReferenceErrorCode.ARRAY_INVALID, "bound_box")
+    return _rounded_vector(
+        tuple(
+            max(corner[index] for corner in bound_box) - min(corner[index] for corner in bound_box)
+            for index in range(VECTOR_COMPONENT_COUNT)
+        )
+    )
 
 
 def _rounded_vector(values: Sequence[float]) -> tuple[float, float, float]:

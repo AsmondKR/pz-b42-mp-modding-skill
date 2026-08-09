@@ -89,6 +89,28 @@ class TestFbxAsciiContract:
         check_equal(caught.value.code.value, "fbx_geometry_missing")
 
 
+class TestFbxBlenderGeometryContract:
+    """Keep raw mesh size distinct from Blender object transforms."""
+
+    def test_measures_geometry_dimensions_before_object_scale(self) -> None:
+        """Expose the tiny PZ-space mesh envelope without multiplying object scale."""
+        module = load_module("pz_b42_mp_skill.fbx_reference_blender")
+        bound_box = (
+            (-1.0, -2.0, -3.0),
+            (4.0, -2.0, -3.0),
+            (-1.0, 5.0, -3.0),
+            (4.0, 5.0, -3.0),
+            (-1.0, -2.0, 6.0),
+            (4.0, -2.0, 6.0),
+            (-1.0, 5.0, 6.0),
+            (4.0, 5.0, 6.0),
+        )
+
+        dimensions = module.geometry_dimensions(bound_box)
+
+        check_equal(dimensions, (5.0, 7.0, 9.0))
+
+
 class TestFbxProbePlanContract:
     """Plan read-only Blender probes against explicit vanilla files."""
 

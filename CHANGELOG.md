@@ -27,3 +27,4 @@
 - Accept Windows 8.3 path aliases without weakening link or reparse rejection.
 - Probe binary and ASCII vanilla FBX files for build-bound size and axis evidence.
 - Document five hashed Build 24574865 FBX observations and matching script transforms.
+- Distinguish tiny PZ weapon geometry from Blender object and model-script scale layers.

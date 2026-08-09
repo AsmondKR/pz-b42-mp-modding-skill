@@ -86,7 +86,7 @@ python skills/pz-b42-mp-modding-skill/scripts/plan_pz_fbx_reference.py \
 
 계획은 Build ID, branch, Blender 경로와 정확한 파일을 SHA-256 명령으로 묶습니다. 실행 결과에는 FBX encoding, version, 축 metadata, unit metadata, raw 또는 Blender-imported bounds, triangle 수와 파일 hash가 포함되며 게임 설치에는 아무것도 쓰지 않습니다.
 
-public Build `24574865`의 shipped 표본에서는 `Front -X / Coord +Z`와 `Front +Z / Coord +X`가 동시에 발견됐고 unit metadata도 서로 달랐습니다. 따라서 `references/build-24574865-fbx-reference.md`의 값은 파일별 관측이며 universal exporter preset이 아닙니다. FBX bounds와 model-script `scale`을 곱해 runtime metre라고 주장하지 않습니다.
+public Build `24574865`의 shipped 표본에서는 `Front -X / Coord +Z`와 `Front +Z / Coord +X`가 동시에 발견됐고 unit metadata도 서로 달랐습니다. 무기 geometry도 실제로 작습니다. 예를 들어 `Machete.x`의 raw envelope는 약 `0.0094 x 0.3345 x 0.0566`이고, closed butterfly knife는 큰 raw FBX에 model-script `scale = 0.01`을 적용합니다. 따라서 `0.01`은 필요할 수 있는 geometry/conversion 또는 script layer이지 universal FBX exporter setting은 아닙니다. 한 vanilla reference의 raw geometry와 그 reference의 model-script transform을 한 쌍으로 맞추고, `0.01`이 필요하면 geometry bake 또는 script scale 중 한 계층에서만 적용합니다. checked-in exporter의 `Global Scale = 1.0`은 유지합니다. FBX bounds와 model-script `scale`을 곱해 runtime metre라고 주장하지 않습니다.
 
 ## 안전 범위
 
