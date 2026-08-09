@@ -12,6 +12,8 @@ from enum import StrEnum
 from pathlib import Path
 from typing import cast, final
 
+from pz_b42_mp_skill.discovery import DiscoveryError, discover
+
 _SYMBOL = re.compile(r"[A-Za-z_][A-Za-z0-9_.:]*\Z")
 _FUNCTION_DECLARATION = re.compile(
     r"^\s*(?:local\s+)?function\s+([A-Za-z_][A-Za-z0-9_.:]*)\s*\(([^)]*)\)",
@@ -39,6 +41,7 @@ class EvidenceKind(StrEnum):
 class ApiQueryErrorCode(StrEnum):
     """Stable query failure categories."""
 
+    DISCOVERY_FAILED = "discovery_failed"
     INVALID_LIMIT = "invalid_limit"
     INVALID_SYMBOL = "invalid_symbol"
     LUA_ROOT_MISSING = "lua_root_missing"
@@ -68,6 +71,15 @@ class SymbolEvidence:
     symbol: str
     signature: str
     snippet: str
+
+
+@dataclass(frozen=True)
+class QueryTarget:
+    """One resolved installation plus optional Steam build provenance."""
+
+    install_root: Path
+    build_id: str | None
+    branch: str | None
 
 
 @dataclass(frozen=True)
@@ -102,6 +114,20 @@ def find_symbol_evidence(
         if len(matches) >= limit:
             break
     return tuple(matches)
+
+
+def resolve_query_target(
+    install_root: Path | None,
+    manifest: Path | None,
+) -> QueryTarget:
+    """Resolve an explicit root or discover a verified Steam build."""
+    if install_root is not None:
+        return QueryTarget(install_root, None, None)
+    try:
+        result = discover(manifest)
+    except DiscoveryError as error:
+        raise ApiQueryError(ApiQueryErrorCode.DISCOVERY_FAILED, str(error)) from error
+    return QueryTarget(result.install_root, result.build_id, result.branch)
 
 
 def _scan_file(path: Path, install_root: Path, symbol: str) -> list[SymbolEvidence]:
@@ -161,7 +187,9 @@ def parser() -> argparse.ArgumentParser:
     argument_parser = argparse.ArgumentParser(
         description="Query exact symbol evidence from installed Project Zomboid Lua.",
     )
-    _ = argument_parser.add_argument("--install-root", required=True, type=Path)
+    location = argument_parser.add_mutually_exclusive_group()
+    _ = location.add_argument("--install-root", type=Path)
+    _ = location.add_argument("--manifest", type=Path)
     _ = argument_parser.add_argument("--symbol", required=True)
     _ = argument_parser.add_argument("--limit", default=100, type=int)
     _ = argument_parser.add_argument("--json", action="store_true")
@@ -172,11 +200,13 @@ def main(arguments: list[str] | None = None) -> int:
     """Run one read-only symbol evidence query."""
     namespace = parser().parse_args(arguments)
     symbol = cast("str", namespace.symbol)
-    install_root = cast("Path", namespace.install_root)
+    install_root = cast("Path | None", namespace.install_root)
+    manifest = cast("Path | None", namespace.manifest)
     limit = cast("int", namespace.limit)
     try:
+        target = resolve_query_target(install_root, manifest)
         matches = find_symbol_evidence(
-            install_root,
+            target.install_root,
             symbol,
             limit=limit,
         )
@@ -189,12 +219,18 @@ def main(arguments: list[str] | None = None) -> int:
 
     if cast("bool", namespace.json):
         document = {
-            "install_root": str(install_root),
+            "branch": target.branch,
+            "build_id": target.build_id,
+            "install_root": str(target.install_root),
             "matches": [asdict(match) for match in matches],
             "symbol": symbol,
         }
         _ = sys.stdout.write(f"{json.dumps(document, indent=2, sort_keys=True)}\n")
     else:
+        if target.build_id is not None:
+            _ = sys.stdout.write(
+                f"Build {target.build_id} ({target.branch}) at {target.install_root}\n",
+            )
         for match in matches:
             _ = sys.stdout.write(
                 f"{match.relative_path}:{match.line_number} [{match.kind}] {match.signature}\n",

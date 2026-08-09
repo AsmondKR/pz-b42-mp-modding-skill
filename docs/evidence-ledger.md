@@ -15,6 +15,7 @@ Only observed evidence is recorded here.
 | 2026-08-09 | Installed Lua API query | Live `OnClientCommand` query classified local, assigned, and method functions plus event registration; malformed and absent symbols returned typed errors | PASS |
 | 2026-08-09 | Isolated Agent Skill package | `npx skills add` installed exactly 18 runtime files with no CI, tests, repository docs, or root README; the installed helper completed live `OnServerCommand`, malformed-input, and help QA | PASS |
 | 2026-08-09 | Guarded scaffold writes | Every generated destination exercised the shared policy guard; live plan/apply created five files, reapply returned `destination_exists`, and generated server Lua retained untrusted-client guidance | PASS |
+| 2026-08-09 | Manifest-driven API query | Explicit-manifest and zero-path discovery returned the current build and branch with live `ISPanel`/`OnClientCommand` evidence; conflicting location arguments exited 2 | PASS |
 
 ## Residual boundary
 

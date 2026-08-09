@@ -34,9 +34,12 @@ class ApiQueryTest(unittest.TestCase):
         """Create an isolated fake Project Zomboid Lua tree."""
         self.temporary_directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary_directory.cleanup)
-        self.install_root = Path(self.temporary_directory.name) / "ProjectZomboid"
+        self.root = Path(self.temporary_directory.name)
+        self.steamapps = self.root / "Steam" / "steamapps"
+        self.install_root = self.steamapps / "common" / "ProjectZomboid"
         self.lua_root = self.install_root / "media" / "lua"
         server_file = self.lua_root / "server" / "ClientCommands.lua"
+        server_dispatch = self.lua_root / "client" / "ServerCommands.lua"
         client_file = self.lua_root / "client" / "ISUI" / "ISPanel.lua"
         server_file.parent.mkdir(parents=True)
         client_file.parent.mkdir(parents=True)
@@ -54,6 +57,17 @@ class ApiQueryTest(unittest.TestCase):
             'ISPanel = ISUIElement:derive("ISPanel")\n'
             "function ISPanel:new(x, y, width, height)\n"
             "end\n",
+            encoding="utf-8",
+        )
+        server_dispatch.write_text("-- fixture\n", encoding="utf-8")
+        self.manifest = self.steamapps / "appmanifest_108600.acf"
+        self.manifest.write_text(
+            '"AppState"\n{\n'
+            '  "appid" "108600"\n'
+            '  "installdir" "ProjectZomboid"\n'
+            '  "buildid" "12345678"\n'
+            '  "UserConfig" { "BetaKey" "public" }\n'
+            "}\n",
             encoding="utf-8",
         )
 
@@ -107,6 +121,28 @@ class ApiQueryTest(unittest.TestCase):
             )
         error = json.loads(error_output.getvalue())
         check_equal(error["error"], "symbol_not_found")
+
+    def test_cli_discovers_build_context_from_manifest(self) -> None:
+        """Resolve an exact manifest and include its build provenance."""
+        output = StringIO()
+        with redirect_stdout(output):
+            check_equal(
+                main(
+                    [
+                        "--manifest",
+                        str(self.manifest),
+                        "--symbol",
+                        "ISPanel",
+                        "--json",
+                    ],
+                ),
+                0,
+            )
+        document = json.loads(output.getvalue())
+        check_equal(document["build_id"], "12345678")
+        check_equal(document["branch"], "public")
+        check_equal(document["install_root"], str(self.install_root.resolve()))
+        check_equal(len(document["matches"]), 2)
 
     def test_missing_lua_root_is_read_only_failure(self) -> None:
         """Reject a non-installation without creating any directories."""

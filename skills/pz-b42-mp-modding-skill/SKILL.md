@@ -5,7 +5,7 @@ license: MIT
 compatibility: Works as an instruction-only Agent Skill on supported coding agents. Optional bundled helpers use Python 3.11+. Live multiplayer QA requires a local Project Zomboid Build 42 client or dedicated server.
 metadata:
   author: pz-b42-mp-modding-skill contributors
-  version: 0.5.0
+  version: 0.6.0
 ---
 
 # Project Zomboid Build 42 Multiplayer Modding
@@ -15,7 +15,7 @@ Build against verified Build 42 evidence, not model memory.
 ## Mandatory workflow
 
 1. Inspect the local Steam manifest and vanilla Lua to record the installed build plus evidence roots. Use `scripts/discover_pz.py` when Python 3.11+ is available.
-2. Query installed vanilla Lua with `scripts/query_pz_api.py` before naming an event, class, or function. Record the returned relative file, line, kind, and signature.
+2. Query installed vanilla Lua with `scripts/query_pz_api.py --symbol <name>` before naming an event, class, or function. Let it discover the Steam manifest, or pass `--manifest` explicitly. Record the returned build, branch, relative file, line, kind, and signature.
 3. Declare client, server, and shared responsibilities before editing.
 4. Keep permissions, persistence, rewards, and state changes server-authoritative.
 5. Treat client commands as untrusted requests. Revalidate identity, permission, range, ownership, and current state on the server.
