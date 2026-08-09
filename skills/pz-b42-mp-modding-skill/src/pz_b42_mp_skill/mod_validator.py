@@ -4,8 +4,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import StrEnum
-from typing import TYPE_CHECKING, final
+from typing import TYPE_CHECKING
 
 from pz_b42_mp_skill.guard_paths import is_reparse
 from pz_b42_mp_skill.mod_metadata import (
@@ -14,6 +13,13 @@ from pz_b42_mp_skill.mod_metadata import (
     read_key_values,
     semicolon_values,
 )
+from pz_b42_mp_skill.mod_validation_types import (
+    ModValidationError,
+    ModValidationErrorCode,
+    ModValidationResult,
+    ValidationCode,
+    ValidationIssue,
+)
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -21,84 +27,6 @@ if TYPE_CHECKING:
 _WORKSHOP_FIELDS = ("version", "workshopid", "title", "description", "visibility", "tags")
 _WORKSHOP_TAGS = ("Build 42", "Multiplayer")
 _MOD_INFO_FIELDS = ("name", "author", "description")
-
-
-class ValidationCode(StrEnum):
-    """Stable structural preflight issue categories."""
-
-    CLIENT_COMMAND_BOUNDARY_MISSING = "client_command_boundary_missing"
-    CLIENT_LUA_MISSING = "client_lua_missing"
-    LINK_PATH = "link_path"
-    MOD_DIRECTORY_INVALID = "mod_directory_invalid"
-    MOD_ID_MISMATCH = "mod_id_mismatch"
-    MOD_ID_MISSING = "mod_id_missing"
-    MOD_INFO_FIELD_MISSING = "mod_info_field_missing"
-    MOD_INFO_MISSING = "mod_info_missing"
-    READ_FAILED = "read_failed"
-    SERVER_COMMAND_BOUNDARY_MISSING = "server_command_boundary_missing"
-    SERVER_LUA_MISSING = "server_lua_missing"
-    SHARED_LUA_MISSING = "shared_lua_missing"
-    WORKSHOP_FIELD_MISSING = "workshop_field_missing"
-    WORKSHOP_MISSING = "workshop_missing"
-    WORKSHOP_TAG_MISSING = "workshop_tag_missing"
-
-
-class ModValidationErrorCode(StrEnum):
-    """Stable invocation failure categories."""
-
-    MOD_ROOT_LINKED = "mod_root_linked"
-    MOD_ROOT_MISSING = "mod_root_missing"
-
-
-@final
-class ModValidationError(Exception):
-    """A preflight invocation failure with a stable code."""
-
-    code: ModValidationErrorCode
-
-    def __init__(self, code: ModValidationErrorCode, detail: str) -> None:
-        """Create one typed invocation failure."""
-        super().__init__(detail)
-        self.code = code
-
-
-@dataclass(frozen=True)
-class ValidationIssue:
-    """One deterministic package preflight issue."""
-
-    code: ValidationCode
-    relative_path: str
-    message: str
-
-
-@dataclass(frozen=True)
-class ModValidationResult:
-    """Complete read-only validation result for one mod root."""
-
-    mod_root: Path
-    mod_id: str | None
-    issues: tuple[ValidationIssue, ...]
-
-    @property
-    def valid(self) -> bool:
-        """Return whether no structural issues were found."""
-        return not self.issues
-
-    def to_document(self) -> dict[str, object]:
-        """Return a JSON-compatible result."""
-        return {
-            "issues": [
-                {
-                    "code": issue.code,
-                    "message": issue.message,
-                    "relative_path": issue.relative_path,
-                }
-                for issue in self.issues
-            ],
-            "mod_id": self.mod_id,
-            "mod_root": str(self.mod_root),
-            "valid": self.valid,
-        }
 
 
 @dataclass(frozen=True)
@@ -142,6 +70,23 @@ def validate_mod_root(mod_root: Path) -> ModValidationResult:
     mod_directory = mod_directories[0]
     mod_id = mod_directory.name
     version_root = mod_directory / "42"
+    if not version_root.is_dir():
+        issues.append(
+            _issue(
+                ValidationCode.BUILD_42_DIRECTORY_MISSING,
+                version_root.relative_to(root),
+                "expected Build 42 version directory",
+            ),
+        )
+        if (mod_directory / "media" / "lua").is_dir():
+            issues.append(
+                _issue(
+                    ValidationCode.LEGACY_UNVERSIONED_LAYOUT,
+                    (mod_directory / "media" / "lua").relative_to(root),
+                    "unversioned media/lua resembles a Build 41 layout",
+                ),
+            )
+        return ModValidationResult(root, mod_id, tuple(issues))
     mod_info = version_root / "mod.info"
     if _require_file(root, mod_info, ValidationCode.MOD_INFO_MISSING, issues):
         metadata = _validate_metadata(

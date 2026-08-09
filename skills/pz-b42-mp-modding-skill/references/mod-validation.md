@@ -21,6 +21,7 @@ Exit codes:
 - Workshop tags include both `Build 42` and `Multiplayer`.
 - `Contents/mods` contains exactly one mod directory.
 - the Build 42 directory is `Contents/mods/<id>/42`.
+- a missing `/42` directory is distinguished from an unversioned B41-style `media/lua` tree.
 - `mod.info` includes name, ID, author, and description; its `id` matches the directory name.
 - client, server, and shared Lua each contain at least one `.lua` file.
 - client Lua registers `Events.OnServerCommand.Add`.
@@ -38,3 +39,5 @@ This is a package and command-boundary preflight, not a proof of multiplayer aut
 - the mod works on a dedicated server.
 
 After preflight passes, review `multiplayer-authority.md` and run the feature with a dedicated server and real clients.
+
+For `legacy_unversioned_layout`, move metadata and assets under the Build 42 version directory, then re-run preflight. Do not treat path migration as proof that B41 API calls are compatible; re-query every volatile symbol.

@@ -13,7 +13,8 @@ from pathlib import Path
 import pytest
 
 from pz_b42_mp_skill.guard_paths import Policy
-from pz_b42_mp_skill.mod_validator import ValidationCode, validate_mod_root
+from pz_b42_mp_skill.mod_validation_types import ValidationCode
+from pz_b42_mp_skill.mod_validator import validate_mod_root
 from pz_b42_mp_skill.mod_validator_cli import main
 from pz_b42_mp_skill.scaffold import ScaffoldSpec, apply_plan, build_plan
 
@@ -120,6 +121,21 @@ class ModValidatorTest(unittest.TestCase):
             {
                 ValidationCode.MOD_INFO_FIELD_MISSING,
                 ValidationCode.WORKSHOP_TAG_MISSING,
+            },
+        )
+
+    def test_legacy_unversioned_layout_gets_migration_finding(self) -> None:
+        """Identify a B41-style media tree instead of cascading missing files."""
+        mod_directory = self.version_root.parent
+        for child in tuple(self.version_root.iterdir()):
+            child.rename(mod_directory / child.name)
+        self.version_root.rmdir()
+        result = validate_mod_root(self.mod_root)
+        check_equal(
+            {issue.code for issue in result.issues},
+            {
+                ValidationCode.BUILD_42_DIRECTORY_MISSING,
+                ValidationCode.LEGACY_UNVERSIONED_LAYOUT,
             },
         )
 

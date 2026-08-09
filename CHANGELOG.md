@@ -17,3 +17,4 @@
 - Run the complete quality gate on Ubuntu and Windows.
 - Add ordered multi-symbol Build evidence reports.
 - Validate required Workshop tags and mod metadata fields.
+- Detect missing Build 42 version directories and legacy unversioned layouts.

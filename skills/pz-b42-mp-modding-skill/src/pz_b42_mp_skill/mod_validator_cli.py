@@ -9,7 +9,8 @@ import sys
 from pathlib import Path
 from typing import cast
 
-from pz_b42_mp_skill.mod_validator import ModValidationError, validate_mod_root
+from pz_b42_mp_skill.mod_validation_types import ModValidationError
+from pz_b42_mp_skill.mod_validator import validate_mod_root
 
 
 def parser() -> argparse.ArgumentParser:

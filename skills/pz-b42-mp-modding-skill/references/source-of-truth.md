@@ -33,6 +33,8 @@ Do not assert any of these from memory:
 - automatic synchronization of arbitrary mod data;
 - B41 recipe, item, or timed-action signatures.
 
+An unversioned B41 mod layout must be migrated to `Contents/mods/<id>/42` before Build 42 validation. Moving files is only a packaging change; it does not validate B41 Lua APIs.
+
 Search installed source and record the exact relative file, line, symbol, and build. Use the read-only query workflow in `api-query.md` when the bundled helper is available. If no evidence is found, describe the limitation and design a tested fallback rather than inventing an API.
 
 ## External references
