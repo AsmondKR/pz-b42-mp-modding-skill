@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pz-b42-mp-modding-skill"
-version = "0.3.0"
+version = "0.4.0"
 description = "Safety and validation tools for a Project Zomboid Build 42 multiplayer Agent Skill"
 requires-python = ">=3.11"
 license = "MIT"
@@ -23,7 +23,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pz_b42_mp_skill"]
+packages = ["skills/pz-b42-mp-modding-skill/src/pz_b42_mp_skill"]
 
 [tool.pytest.ini_options]
 addopts = "-q"
@@ -40,4 +40,8 @@ ignore = ["COM812", "D203", "D213"]
 [tool.basedpyright]
 typeCheckingMode = "all"
 pythonVersion = "3.11"
-include = ["src", "scripts"]
+extraPaths = ["skills/pz-b42-mp-modding-skill/src"]
+include = [
+  "skills/pz-b42-mp-modding-skill/src",
+  "skills/pz-b42-mp-modding-skill/scripts",
+]

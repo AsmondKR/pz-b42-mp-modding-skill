@@ -13,6 +13,7 @@ Only observed evidence is recorded here.
 | 2026-08-09 | npm-based installation | `npx skills add` copied skill version `0.2.0` into an isolated Codex project | PASS |
 | 2026-08-09 | Public-content privacy audit | No tracked queue scenario, local absolute path, or private fixture identifier remained | PASS |
 | 2026-08-09 | Installed Lua API query | Live `OnClientCommand` query classified local, assigned, and method functions plus event registration; malformed and absent symbols returned typed errors | PASS |
+| 2026-08-09 | Isolated Agent Skill package | `npx skills add` installed exactly 18 runtime files with no CI, tests, repository docs, or root README; the installed helper completed live `OnServerCommand`, malformed-input, and help QA | PASS |
 
 ## Residual boundary
 

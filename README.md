@@ -44,6 +44,8 @@ PZ Build 42 전용 멀티플레이 모드 구조를 설계해줘.
 - 기존 파일 덮어쓰기와 작업공간 밖 경로 이탈 거부
 - 전용 서버와 실제 클라이언트를 사용한 멀티플레이 검증 요구
 
+`npx skills`는 `skills/pz-b42-mp-modding-skill` 전용 폴더만 설치합니다. 저장소의 CI, 테스트, 기여 문서와 내부 검증 기록은 에이전트 스킬에 포함되지 않습니다.
+
 ## 안전 범위
 
 포함된 도구는 Project Zomboid 설치 폴더, 구독한 Workshop 콘텐츠, 세이브, 자격증명, 운영 중인 서버 설정, 제3자 모드를 수정하지 않습니다. 쓰기 작업은 명시적으로 승인된 전용 작업공간 안에서만 허용되며 기존 대상이 있으면 중단합니다.
@@ -52,11 +54,10 @@ PZ Build 42 전용 멀티플레이 모드 구조를 설계해줘.
 
 ## 저장소 구성
 
-- `SKILL.md`: 에이전트가 따르는 핵심 작업 절차
-- `references/source-of-truth.md`: Build 42 근거 우선순위
-- `references/api-query.md`: 설치된 Lua 심볼 근거 조회 규칙
-- `references/multiplayer-authority.md`: 서버 권위형 네트워크 설계
-- `references/safety-boundaries.md`: 파일 쓰기 승인 범위
+- `skills/pz-b42-mp-modding-skill/SKILL.md`: 에이전트가 따르는 핵심 작업 절차
+- `skills/pz-b42-mp-modding-skill/references/`: 설치되는 근거·권위·안전 지침
+- `tests/`: 배포 패키지 밖의 회귀 테스트
+- `docs/evidence-ledger.md`: 배포 패키지 밖의 검증 기록
 
 ## 라이선스
 
