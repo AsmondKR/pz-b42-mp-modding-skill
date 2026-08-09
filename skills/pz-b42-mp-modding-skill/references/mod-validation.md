@@ -17,9 +17,11 @@ Exit codes:
 ## Checked boundaries
 
 - `workshop.txt` exists at the package root.
+- `workshop.txt` includes version, Workshop ID, title, description, visibility, and tags.
+- Workshop tags include both `Build 42` and `Multiplayer`.
 - `Contents/mods` contains exactly one mod directory.
 - the Build 42 directory is `Contents/mods/<id>/42`.
-- `mod.info` exists and its `id` matches the directory name.
+- `mod.info` includes name, ID, author, and description; its `id` matches the directory name.
 - client, server, and shared Lua each contain at least one `.lua` file.
 - client Lua registers `Events.OnServerCommand.Add`.
 - server Lua registers `Events.OnClientCommand.Add`.

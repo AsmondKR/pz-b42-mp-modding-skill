@@ -41,7 +41,9 @@ class SkillPackageTest(unittest.TestCase):
             SKILL_ROOT / "scripts" / "validate_mod.py",
             SKILL_ROOT / "src" / "pz_b42_mp_skill" / "api_query.py",
             SKILL_ROOT / "src" / "pz_b42_mp_skill" / "evidence_report.py",
+            SKILL_ROOT / "src" / "pz_b42_mp_skill" / "mod_metadata.py",
             SKILL_ROOT / "src" / "pz_b42_mp_skill" / "mod_validator.py",
+            SKILL_ROOT / "src" / "pz_b42_mp_skill" / "mod_validator_cli.py",
         )
         for path in required:
             check_true(path.is_file())

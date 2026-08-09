@@ -13,7 +13,8 @@ from pathlib import Path
 import pytest
 
 from pz_b42_mp_skill.guard_paths import Policy
-from pz_b42_mp_skill.mod_validator import ValidationCode, main, validate_mod_root
+from pz_b42_mp_skill.mod_validator import ValidationCode, validate_mod_root
+from pz_b42_mp_skill.mod_validator_cli import main
 from pz_b42_mp_skill.scaffold import ScaffoldSpec, apply_plan, build_plan
 
 
@@ -93,6 +94,33 @@ class ModValidatorTest(unittest.TestCase):
         check_equal(
             {issue.code for issue in result.issues},
             {ValidationCode.MOD_ID_MISMATCH},
+        )
+
+    def test_publishing_tags_and_mod_metadata_are_required(self) -> None:
+        """Report missing Build 42 tags and required identity fields."""
+        workshop = self.mod_root / "workshop.txt"
+        workshop.write_text(
+            workshop.read_text(encoding="utf-8").replace(
+                "tags=Build 42;Multiplayer",
+                "tags=Multiplayer",
+            ),
+            encoding="utf-8",
+        )
+        mod_info = self.version_root / "mod.info"
+        mod_info.write_text(
+            mod_info.read_text(encoding="utf-8").replace(
+                "author=Example Author\n",
+                "",
+            ),
+            encoding="utf-8",
+        )
+        result = validate_mod_root(self.mod_root)
+        check_equal(
+            {issue.code for issue in result.issues},
+            {
+                ValidationCode.MOD_INFO_FIELD_MISSING,
+                ValidationCode.WORKSHOP_TAG_MISSING,
+            },
         )
 
     def test_cli_emits_json_and_typed_missing_root_error(self) -> None:

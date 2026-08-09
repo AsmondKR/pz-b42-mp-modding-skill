@@ -5,7 +5,7 @@ license: MIT
 compatibility: Works as an instruction-only Agent Skill on supported coding agents. Optional bundled helpers use Python 3.11+. Live multiplayer QA requires a local Project Zomboid Build 42 client or dedicated server.
 metadata:
   author: pz-b42-mp-modding-skill contributors
-  version: 0.9.0
+  version: 0.10.0
 ---
 
 # Project Zomboid Build 42 Multiplayer Modding

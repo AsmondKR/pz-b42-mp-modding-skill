@@ -16,3 +16,4 @@
 - Add read-only Build 42 multiplayer mod package preflight.
 - Run the complete quality gate on Ubuntu and Windows.
 - Add ordered multi-symbol Build evidence reports.
+- Validate required Workshop tags and mod metadata fields.

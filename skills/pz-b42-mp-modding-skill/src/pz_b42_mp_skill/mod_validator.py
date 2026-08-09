@@ -3,15 +3,24 @@
 
 from __future__ import annotations
 
-import argparse
-import json
-import sys
 from dataclasses import dataclass
 from enum import StrEnum
-from pathlib import Path
-from typing import cast, final
+from typing import TYPE_CHECKING, final
 
 from pz_b42_mp_skill.guard_paths import is_reparse
+from pz_b42_mp_skill.mod_metadata import (
+    MetadataReadError,
+    missing_fields,
+    read_key_values,
+    semicolon_values,
+)
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+_WORKSHOP_FIELDS = ("version", "workshopid", "title", "description", "visibility", "tags")
+_WORKSHOP_TAGS = ("Build 42", "Multiplayer")
+_MOD_INFO_FIELDS = ("name", "author", "description")
 
 
 class ValidationCode(StrEnum):
@@ -23,12 +32,15 @@ class ValidationCode(StrEnum):
     MOD_DIRECTORY_INVALID = "mod_directory_invalid"
     MOD_ID_MISMATCH = "mod_id_mismatch"
     MOD_ID_MISSING = "mod_id_missing"
+    MOD_INFO_FIELD_MISSING = "mod_info_field_missing"
     MOD_INFO_MISSING = "mod_info_missing"
     READ_FAILED = "read_failed"
     SERVER_COMMAND_BOUNDARY_MISSING = "server_command_boundary_missing"
     SERVER_LUA_MISSING = "server_lua_missing"
     SHARED_LUA_MISSING = "shared_lua_missing"
+    WORKSHOP_FIELD_MISSING = "workshop_field_missing"
     WORKSHOP_MISSING = "workshop_missing"
+    WORKSHOP_TAG_MISSING = "workshop_tag_missing"
 
 
 class ModValidationErrorCode(StrEnum):
@@ -112,7 +124,7 @@ def validate_mod_root(mod_root: Path) -> ModValidationResult:
         return ModValidationResult(root, None, link_issues)
 
     issues: list[ValidationIssue] = []
-    _ = _require_file(root, root / "workshop.txt", ValidationCode.WORKSHOP_MISSING, issues)
+    _validate_workshop(root, issues)
     mods_root = root / "Contents" / "mods"
     mod_directories = (
         sorted(path for path in mods_root.iterdir() if path.is_dir()) if mods_root.is_dir() else []
@@ -132,7 +144,13 @@ def validate_mod_root(mod_root: Path) -> ModValidationResult:
     version_root = mod_directory / "42"
     mod_info = version_root / "mod.info"
     if _require_file(root, mod_info, ValidationCode.MOD_INFO_MISSING, issues):
-        metadata = _read_metadata(root, mod_info, issues)
+        metadata = _validate_metadata(
+            root,
+            mod_info,
+            _MOD_INFO_FIELDS,
+            ValidationCode.MOD_INFO_FIELD_MISSING,
+            issues,
+        )
         declared_id = metadata.get("id")
         if declared_id is None:
             issues.append(
@@ -178,6 +196,29 @@ def _linked_paths(root: Path) -> list[Path]:
     return sorted(path for path in root.rglob("*") if path.is_symlink() or is_reparse(path))
 
 
+def _validate_workshop(root: Path, issues: list[ValidationIssue]) -> None:
+    workshop = root / "workshop.txt"
+    if not _require_file(root, workshop, ValidationCode.WORKSHOP_MISSING, issues):
+        return
+    metadata = _validate_metadata(
+        root,
+        workshop,
+        _WORKSHOP_FIELDS,
+        ValidationCode.WORKSHOP_FIELD_MISSING,
+        issues,
+    )
+    tags = semicolon_values(metadata.get("tags", ""))
+    issues.extend(
+        _issue(
+            ValidationCode.WORKSHOP_TAG_MISSING,
+            workshop.relative_to(root),
+            f"missing tag {tag!r}",
+        )
+        for tag in _WORKSHOP_TAGS
+        if tag not in tags
+    )
+
+
 def _require_file(
     root: Path,
     path: Path,
@@ -190,22 +231,27 @@ def _require_file(
     return False
 
 
-def _read_metadata(
+def _validate_metadata(
     root: Path,
     path: Path,
+    required: tuple[str, ...],
+    missing_code: ValidationCode,
     issues: list[ValidationIssue],
 ) -> dict[str, str]:
     try:
-        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
-    except OSError as error:
+        metadata = read_key_values(path)
+    except MetadataReadError as error:
         issues.append(_issue(ValidationCode.READ_FAILED, path.relative_to(root), str(error)))
         return {}
-    return {
-        key.strip(): value.strip()
-        for line in lines
-        if "=" in line
-        for key, value in (line.split("=", 1),)
-    }
+    issues.extend(
+        _issue(
+            missing_code,
+            path.relative_to(root),
+            f"missing field {field!r}",
+        )
+        for field in missing_fields(metadata, required)
+    )
+    return metadata
 
 
 def _lua_files(
@@ -243,35 +289,3 @@ def _require_boundary(
 
 def _issue(code: ValidationCode, path: Path, message: str) -> ValidationIssue:
     return ValidationIssue(code, path.as_posix(), message)
-
-
-def parser() -> argparse.ArgumentParser:
-    """Build the preflight CLI parser."""
-    result = argparse.ArgumentParser(description=__doc__)
-    _ = result.add_argument("--mod-root", required=True, type=Path)
-    _ = result.add_argument("--json", action="store_true")
-    return result
-
-
-def main(arguments: list[str] | None = None) -> int:
-    """Run one read-only mod preflight."""
-    namespace = parser().parse_args(arguments)
-    try:
-        result = validate_mod_root(cast("Path", namespace.mod_root))
-    except ModValidationError as error:
-        _ = sys.stderr.write(
-            f"{json.dumps({'error': error.code, 'message': str(error)})}\n",
-        )
-        return 2
-    if cast("bool", namespace.json):
-        _ = sys.stdout.write(f"{json.dumps(result.to_document(), indent=2, sort_keys=True)}\n")
-    elif result.valid:
-        _ = sys.stdout.write(f"PASS {result.mod_id} at {result.mod_root}\n")
-    else:
-        for issue in result.issues:
-            _ = sys.stdout.write(f"{issue.code} {issue.relative_path}: {issue.message}\n")
-    return 0 if result.valid else 1
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

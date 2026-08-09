@@ -11,7 +11,7 @@ from pathlib import Path
 def run() -> int:
     """Load the package directly from an installed skill directory."""
     _ = sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-    _ = runpy.run_module("pz_b42_mp_skill.mod_validator", run_name="__main__")
+    _ = runpy.run_module("pz_b42_mp_skill.mod_validator_cli", run_name="__main__")
     return 0
 
 
