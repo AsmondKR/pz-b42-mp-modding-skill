@@ -14,3 +14,4 @@
 - Re-authorize every scaffold destination through the shared mutation guard.
 - Resolve Lua evidence queries directly from Steam manifests.
 - Add read-only Build 42 multiplayer mod package preflight.
+- Run the complete quality gate on Ubuntu and Windows.
