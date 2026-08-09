@@ -52,11 +52,13 @@ class ApiQueryTest(unittest.TestCase):
         client_file.parent.mkdir(parents=True)
         server_file.write_text(
             "ClientCommands.OnClientCommand = function(module, command, player, args)\n"
+            'print("OnClientCommand")\n'
             "end\n"
             "local function OnClientCommand(module, command, player, args)\n"
             "end\n"
             "Events.OnClientCommand.Add(OnClientCommand)\n"
             "-- Events.OnClientCommand.Add(CommentedOut)\n"
+            "Events.OnClientCommand.Add(AnotherHandler)\n"
             "Events.OnClientCommandExtra.Add(OtherHandler)\n",
             encoding="utf-8",
         )
@@ -83,9 +85,13 @@ class ApiQueryTest(unittest.TestCase):
         command_matches = find_symbol_evidence(self.install_root, "OnClientCommand")
         check_equal(
             {match.kind for match in command_matches},
-            {EvidenceKind.EVENT_REGISTRATION, EvidenceKind.FUNCTION},
+            {
+                EvidenceKind.EVENT_REGISTRATION,
+                EvidenceKind.FUNCTION,
+                EvidenceKind.REFERENCE,
+            },
         )
-        check_equal([match.line_number for match in command_matches], [1, 3, 5])
+        check_equal([match.line_number for match in command_matches], [6, 1, 8, 4, 2])
         panel_matches = find_symbol_evidence(self.install_root, "ISPanel")
         check_equal(
             {match.kind for match in panel_matches},
@@ -110,7 +116,7 @@ class ApiQueryTest(unittest.TestCase):
             )
         document = json.loads(output.getvalue())
         check_equal(document["symbol"], "OnClientCommand")
-        check_equal(len(document["matches"]), 3)
+        check_equal(len(document["matches"]), 5)
 
         error_output = StringIO()
         with redirect_stderr(error_output):
@@ -128,6 +134,18 @@ class ApiQueryTest(unittest.TestCase):
             )
         error = json.loads(error_output.getvalue())
         check_equal(error["error"], "symbol_not_found")
+
+    def test_limit_prefers_structured_evidence_over_early_references(self) -> None:
+        """Apply limits after ranking event and function evidence."""
+        matches = find_symbol_evidence(
+            self.install_root,
+            "OnClientCommand",
+            limit=2,
+        )
+        check_equal(
+            [match.kind for match in matches],
+            [EvidenceKind.EVENT_REGISTRATION, EvidenceKind.FUNCTION],
+        )
 
     def test_cli_discovers_build_context_from_manifest(self) -> None:
         """Resolve an exact manifest and include its build provenance."""

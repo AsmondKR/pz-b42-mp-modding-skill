@@ -10,7 +10,7 @@ python scripts/report_pz_api.py `
   --json
 ```
 
-The command resolves one Build 42 installation, preserves input symbol order, and evaluates every symbol under the same build ID and branch.
+The command resolves one Build 42 installation, preserves input symbol order, and evaluates every symbol under the same build ID and branch. Matches inside each symbol use the ranking defined in `api-query.md` before the per-symbol limit is applied.
 
 Exit codes:
 

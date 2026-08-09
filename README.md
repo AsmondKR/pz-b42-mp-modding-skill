@@ -39,6 +39,7 @@ PZ Build 42 전용 멀티플레이 모드 구조를 설계해줘.
 - 설치된 Steam 빌드와 바닐라 Lua 근거를 먼저 확인
 - Steam manifest에서 빌드 정보를 확인하고 이벤트, 함수, 클래스 근거를 상대 경로와 줄 번호로 추출
 - 여러 API 의존성을 동일한 Build ID와 branch 아래에서 일괄 확인
+- generic reference보다 event, class, function 근거를 우선하여 제한 적용
 - Lua 근거 조회 중 symlink, junction, reparse 경로 추적 거부
 - Build 42 패키지·Workshop metadata와 client/server 명령 경계를 읽기 전용으로 사전 검사
 - B41식 unversioned `media/lua` 레이아웃을 명시적인 migration finding으로 구분

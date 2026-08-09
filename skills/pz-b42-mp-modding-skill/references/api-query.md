@@ -9,7 +9,16 @@ python scripts/query_pz_api.py `
   --json
 ```
 
-The helper is read-only. It verifies the manifest through the discovery module, scans `media/lua/**/*.lua`, ignores line comments, matches exact Lua identifiers, and returns deterministic evidence sorted by relative path and line number. JSON output includes the resolved build ID and branch when discovery was used.
+The helper is read-only. It verifies the manifest through the discovery module, scans `media/lua/**/*.lua`, ignores line comments, and matches exact Lua identifiers. JSON output includes the resolved build ID and branch when discovery was used.
+
+Results are ranked before `--limit` is applied:
+
+1. exact event registrations;
+2. class derivations;
+3. function definitions;
+4. generic exact references.
+
+The first match from each available strong kind is returned before duplicate registrations, derivations, or definitions. Remaining strong matches follow in the same priority order, and generic references remain last. Paths and line numbers provide deterministic ordering within each kind. This prevents both early references and duplicate evidence forms from hiding complementary source proof.
 
 ## Evidence kinds
 

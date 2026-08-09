@@ -19,3 +19,4 @@
 - Validate required Workshop tags and mod metadata fields.
 - Detect missing Build 42 version directories and legacy unversioned layouts.
 - Refuse linked or reparse-point Lua evidence paths.
+- Rank strong Lua evidence before applying result limits.

@@ -113,11 +113,8 @@ def find_symbol_evidence(
 
     matches: list[SymbolEvidence] = []
     for path in _safe_lua_files(lua_root):
-        remaining = limit - len(matches)
-        matches.extend(_scan_file(path, install_root, symbol)[:remaining])
-        if len(matches) >= limit:
-            break
-    return tuple(matches)
+        matches.extend(_scan_file(path, install_root, symbol))
+    return _rank_evidence(matches)[:limit]
 
 
 def _safe_lua_files(lua_root: Path) -> tuple[Path, ...]:
@@ -128,6 +125,35 @@ def _safe_lua_files(lua_root: Path) -> tuple[Path, ...]:
         if path.suffix.casefold() == ".lua" and path.is_file():
             files.append(path)
     return tuple(files)
+
+
+def _rank_evidence(matches: list[SymbolEvidence]) -> tuple[SymbolEvidence, ...]:
+    strong_kinds = (
+        EvidenceKind.EVENT_REGISTRATION,
+        EvidenceKind.CLASS_DERIVATION,
+        EvidenceKind.FUNCTION,
+    )
+    groups = {
+        kind: sorted(
+            (match for match in matches if match.kind is kind),
+            key=_evidence_location_key,
+        )
+        for kind in EvidenceKind
+    }
+    ranked: list[SymbolEvidence] = []
+    ranked.extend(groups[kind][0] for kind in strong_kinds if groups[kind])
+    for kind in strong_kinds:
+        ranked.extend(groups[kind][1:])
+    ranked.extend(groups[EvidenceKind.REFERENCE])
+    return tuple(ranked)
+
+
+def _evidence_location_key(evidence: SymbolEvidence) -> tuple[str, int, str]:
+    return (
+        evidence.relative_path.casefold(),
+        evidence.line_number,
+        evidence.signature,
+    )
 
 
 def resolve_query_target(
