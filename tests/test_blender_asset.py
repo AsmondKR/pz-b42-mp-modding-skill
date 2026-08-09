@@ -3,8 +3,10 @@
 
 from __future__ import annotations
 
+import ctypes
 import importlib
 import json
+import os
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -36,6 +38,22 @@ def check_true(value: object) -> None:
     """Fail when a value is falsey."""
     if not value:
         pytest.fail(f"expected truthy value, received {value!r}")
+
+
+def windows_short_path(path: Path) -> Path | None:
+    """Return an 8.3 alias when the Windows volume exposes one."""
+    if os.name != "nt":
+        return None
+    buffer = ctypes.create_unicode_buffer(32768)
+    length = ctypes.windll.kernel32.GetShortPathNameW(
+        str(path),
+        buffer,
+        len(buffer),
+    )
+    if length == 0 or length >= len(buffer):
+        return None
+    short_path = Path(buffer.value)
+    return short_path if short_path != path else None
 
 
 def write_manifest(root: Path, *, profile: str = "static_model") -> Path:
@@ -125,6 +143,22 @@ class BlenderAssetManifestTest(unittest.TestCase):
                 _ = module.load_asset_manifest(manifest_path, write_policy(root))
 
             check_equal(caught.value.code.value, "path_outside_manifest_root")
+
+    @pytest.mark.skipif(os.name != "nt", reason="Windows 8.3 path contract")
+    def test_manifest_accepts_windows_short_path_alias(self) -> None:
+        """Treat an 8.3 spelling of the same workspace as the same path."""
+        module = load_module("pz_b42_mp_skill.asset_manifest")
+        with TemporaryDirectory(prefix="blender-asset-manifest-long-name-") as directory:
+            root = Path(directory)
+            _ = write_manifest(root)
+            policy = write_policy(root)
+            short_root = windows_short_path(root)
+            if short_root is None:
+                pytest.skip("8.3 aliases are disabled on this volume")
+
+            result = module.load_asset_manifest(short_root / "asset.json", policy)
+
+            check_equal(result.manifest_path, (root / "asset.json").resolve())
 
 
 class BlenderSceneContractTest(unittest.TestCase):

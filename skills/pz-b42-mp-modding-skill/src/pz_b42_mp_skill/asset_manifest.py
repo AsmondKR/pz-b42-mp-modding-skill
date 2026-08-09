@@ -14,10 +14,9 @@ from pz_b42_mp_skill import OUTPUT_SCHEMA_VERSION
 from pz_b42_mp_skill.guard_paths import (
     Policy,
     authorize_destination,
-    contains_link_or_reparse,
     invalid_windows_name,
-    is_reparse,
     is_within,
+    path_contains_link_or_reparse,
 )
 from pz_b42_mp_skill.guard_types import GuardError
 
@@ -173,9 +172,7 @@ def _resolve_manifest_path(path: Path, policy: Policy) -> Path:
     if (
         not resolved.is_file()
         or not is_within(resolved, policy.workspace_root)
-        or contains_link_or_reparse(policy.workspace_root, lexical)
-        or lexical.is_symlink()
-        or is_reparse(lexical)
+        or path_contains_link_or_reparse(lexical)
     ):
         raise AssetManifestError(AssetManifestErrorCode.LINK_PATH, str(path))
     return resolved
@@ -234,9 +231,7 @@ def _input_path(policy: Policy, value: object, suffixes: str | frozenset[str]) -
     if (
         not resolved.is_file()
         or not is_within(resolved, policy.workspace_root)
-        or contains_link_or_reparse(policy.workspace_root, lexical)
-        or lexical.is_symlink()
-        or is_reparse(lexical)
+        or path_contains_link_or_reparse(lexical)
     ):
         raise AssetManifestError(AssetManifestErrorCode.LINK_PATH, relative)
     allowed = {suffixes} if isinstance(suffixes, str) else suffixes

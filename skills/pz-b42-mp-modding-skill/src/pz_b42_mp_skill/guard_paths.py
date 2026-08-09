@@ -166,6 +166,15 @@ def contains_link_or_reparse(workspace: Path, parent: Path) -> bool:
     return False
 
 
+def path_contains_link_or_reparse(path: Path) -> bool:
+    """Inspect a path spelling without requiring its canonical workspace prefix."""
+    absolute = path.absolute()
+    return any(
+        candidate.is_symlink() or is_reparse(candidate)
+        for candidate in (absolute, *absolute.parents)
+    )
+
+
 def is_reparse(path: Path) -> bool:
     """Return whether Windows marks a path as a reparse point."""
     try:

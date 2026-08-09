@@ -24,3 +24,4 @@
 - Replace blanket server authority with a workload-aware selective authority model.
 - Add Impeccable-inspired asset art direction and Codex app image-prompt handoff.
 - Add policy-bound Blender 5.1 scene validation, FBX export planning, and round-trip checks.
+- Accept Windows 8.3 path aliases without weakening link or reparse rejection.
