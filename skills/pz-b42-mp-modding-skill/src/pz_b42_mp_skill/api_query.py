@@ -12,6 +12,7 @@ from enum import StrEnum
 from pathlib import Path
 from typing import cast, final
 
+from pz_b42_mp_skill import OUTPUT_SCHEMA_VERSION
 from pz_b42_mp_skill.discovery import DiscoveryError, discover
 from pz_b42_mp_skill.guard_paths import is_reparse
 
@@ -263,6 +264,7 @@ def main(arguments: list[str] | None = None) -> int:
             "build_id": target.build_id,
             "install_root": str(target.install_root),
             "matches": [asdict(match) for match in matches],
+            "schema_version": OUTPUT_SCHEMA_VERSION,
             "symbol": symbol,
         }
         _ = sys.stdout.write(f"{json.dumps(document, indent=2, sort_keys=True)}\n")
@@ -279,9 +281,12 @@ def main(arguments: list[str] | None = None) -> int:
 
 
 def _write_error(error: ApiQueryError) -> int:
-    _ = sys.stderr.write(
-        f"{json.dumps({'error': error.code, 'message': str(error)})}\n",
-    )
+    document = {
+        "error": error.code,
+        "message": str(error),
+        "schema_version": OUTPUT_SCHEMA_VERSION,
+    }
+    _ = sys.stderr.write(f"{json.dumps(document)}\n")
     return 3 if error.code is ApiQueryErrorCode.SYMBOL_NOT_FOUND else 2
 
 

@@ -113,7 +113,9 @@ class EvidenceReportTest(unittest.TestCase):
                 ),
                 0,
             )
-        check_true(json.loads(complete_output.getvalue())["complete"])
+        complete_document = json.loads(complete_output.getvalue())
+        check_equal(complete_document["schema_version"], 1)
+        check_true(complete_document["complete"])
 
         partial_output = StringIO()
         with redirect_stdout(partial_output):

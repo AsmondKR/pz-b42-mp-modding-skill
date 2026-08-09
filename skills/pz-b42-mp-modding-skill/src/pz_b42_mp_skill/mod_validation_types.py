@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import TYPE_CHECKING, final
 
+from pz_b42_mp_skill import OUTPUT_SCHEMA_VERSION
+
 if TYPE_CHECKING:
     from pathlib import Path
 
@@ -87,5 +89,6 @@ class ModValidationResult:
             ],
             "mod_id": self.mod_id,
             "mod_root": str(self.mod_root),
+            "schema_version": OUTPUT_SCHEMA_VERSION,
             "valid": self.valid,
         }

@@ -1,5 +1,7 @@
 # Build 42 multiplayer mod preflight
 
+JSON successes and failures declare top-level `schema_version: 1`.
+
 Run the read-only validator on the generated mod root before dedicated-server QA.
 
 ```powershell

@@ -1,5 +1,7 @@
 # Build 42 source-of-truth policy
 
+JSON discovery successes and failures declare top-level `schema_version: 1`.
+
 Project Zomboid modding documentation is incomplete and often mixes Build 41 with Build 42. Every volatile API claim needs provenance.
 
 ## Evidence ladder

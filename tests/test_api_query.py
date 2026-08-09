@@ -115,6 +115,7 @@ class ApiQueryTest(unittest.TestCase):
                 0,
             )
         document = json.loads(output.getvalue())
+        check_equal(document["schema_version"], 1)
         check_equal(document["symbol"], "OnClientCommand")
         check_equal(len(document["matches"]), 5)
 

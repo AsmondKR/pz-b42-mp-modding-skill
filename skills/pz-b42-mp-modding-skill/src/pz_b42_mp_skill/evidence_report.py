@@ -10,6 +10,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import cast
 
+from pz_b42_mp_skill import OUTPUT_SCHEMA_VERSION
 from pz_b42_mp_skill.api_query import (
     ApiQueryError,
     ApiQueryErrorCode,
@@ -62,6 +63,7 @@ class EvidenceReport:
             "complete": self.complete,
             "install_root": str(self.install_root),
             "queries": [query.to_document() for query in self.queries],
+            "schema_version": OUTPUT_SCHEMA_VERSION,
         }
 
 
@@ -114,9 +116,12 @@ def main(arguments: list[str] | None = None) -> int:
             limit=cast("int", namespace.limit),
         )
     except ApiQueryError as error:
-        _ = sys.stderr.write(
-            f"{json.dumps({'error': error.code, 'message': str(error)})}\n",
-        )
+        document = {
+            "error": error.code,
+            "message": str(error),
+            "schema_version": OUTPUT_SCHEMA_VERSION,
+        }
+        _ = sys.stderr.write(f"{json.dumps(document)}\n")
         return 2
     if cast("bool", namespace.json):
         _ = sys.stdout.write(f"{json.dumps(report.to_document(), indent=2, sort_keys=True)}\n")

@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 from typing import cast
 
+from pz_b42_mp_skill import OUTPUT_SCHEMA_VERSION
 from pz_b42_mp_skill.mod_validation_types import ModValidationError
 from pz_b42_mp_skill.mod_validator import validate_mod_root
 
@@ -27,9 +28,12 @@ def main(arguments: list[str] | None = None) -> int:
     try:
         result = validate_mod_root(cast("Path", namespace.mod_root))
     except ModValidationError as error:
-        _ = sys.stderr.write(
-            f"{json.dumps({'error': error.code, 'message': str(error)})}\n",
-        )
+        document = {
+            "error": error.code,
+            "message": str(error),
+            "schema_version": OUTPUT_SCHEMA_VERSION,
+        }
+        _ = sys.stderr.write(f"{json.dumps(document)}\n")
         return 2
     if cast("bool", namespace.json):
         _ = sys.stdout.write(f"{json.dumps(result.to_document(), indent=2, sort_keys=True)}\n")

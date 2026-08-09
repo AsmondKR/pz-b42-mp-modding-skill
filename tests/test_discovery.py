@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -52,6 +53,7 @@ class DiscoveryTest(unittest.TestCase):
         check_equal(result.branch, "public")
         check_equal(result.install_root, self.install.resolve())
         check_equal(set(result.evidence), {"client_commands", "server_commands", "ui_panel"})
+        check_equal(json.loads(result.to_json())["schema_version"], 1)
 
     def test_missing_install_is_reported_without_creating_files(self) -> None:
         """Refuse a stale manifest without changing the fixture tree."""

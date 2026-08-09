@@ -1,5 +1,7 @@
 # Multi-symbol Build evidence report
 
+JSON successes and failures declare top-level `schema_version: 1`.
+
 Use the batch report when a design depends on several installed Lua claims.
 
 ```powershell

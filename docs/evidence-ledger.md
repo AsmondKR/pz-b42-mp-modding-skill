@@ -23,6 +23,7 @@ Only observed evidence is recorded here.
 | 2026-08-09 | B41 layout migration preflight | A complete unversioned fixture returned only `build_42_directory_missing` and `legacy_unversioned_layout` while the B42 package remained valid | PASS |
 | 2026-08-09 | Linked Lua query refusal | A simulated reparse Lua file returned `lua_path_linked` before read; live single and partial batch queries retained their prior outputs and exit codes | PASS |
 | 2026-08-09 | Strong evidence ranking | Live limit-2 queries returned event+function for `OnClientCommand` and class+function for `ISPanel`, preventing duplicate forms and references from hiding complementary proof | PASS |
+| 2026-08-09 | Read-only JSON schema contract | Live discovery, query, report, invalid preflight, and typed query error documents all declared top-level `schema_version: 1` | PASS |
 
 ## Residual boundary
 

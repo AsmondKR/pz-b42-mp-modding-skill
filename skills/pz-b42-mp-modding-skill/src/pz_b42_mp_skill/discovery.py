@@ -13,6 +13,8 @@ from enum import StrEnum
 from pathlib import Path
 from typing import cast, final
 
+from pz_b42_mp_skill import OUTPUT_SCHEMA_VERSION
+
 
 class DiscoveryErrorCode(StrEnum):
     """Stable discovery failure categories."""
@@ -49,6 +51,7 @@ class DiscoveryResult:
     def to_json(self) -> str:
         """Return stable machine-readable discovery output."""
         document = asdict(self)
+        document["schema_version"] = OUTPUT_SCHEMA_VERSION
         document["manifest"] = str(self.manifest)
         document["install_root"] = str(self.install_root)
         document["user_data_root"] = str(self.user_data_root)
@@ -146,9 +149,12 @@ def main(arguments: list[str] | None = None) -> int:
     try:
         result = discover(manifest)
     except DiscoveryError as error:
-        _ = sys.stderr.write(
-            f"{json.dumps({'error': 'discovery_failed', 'message': str(error)})}\n",
-        )
+        document = {
+            "error": "discovery_failed",
+            "message": str(error),
+            "schema_version": OUTPUT_SCHEMA_VERSION,
+        }
+        _ = sys.stderr.write(f"{json.dumps(document)}\n")
         return 2
     if emit_json:
         _ = sys.stdout.write(f"{result.to_json()}\n")

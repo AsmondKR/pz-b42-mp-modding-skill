@@ -145,6 +145,7 @@ class ModValidatorTest(unittest.TestCase):
         with redirect_stdout(output):
             check_equal(main(["--mod-root", str(self.mod_root), "--json"]), 0)
         document = json.loads(output.getvalue())
+        check_equal(document["schema_version"], 1)
         check_true(document["valid"])
         check_equal(document["mod_id"], "ExampleMod")
 

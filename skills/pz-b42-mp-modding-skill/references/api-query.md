@@ -1,5 +1,7 @@
 # Installed Lua symbol evidence
 
+JSON successes and failures declare top-level `schema_version: 1`.
+
 The query helper can discover the conventional Steam manifest itself or resolve one explicit manifest. Pass `--install-root` only when the installation is outside those Steam locations.
 
 ```powershell
