@@ -17,6 +17,8 @@ Only observed evidence is recorded here.
 | 2026-08-09 | Guarded scaffold writes | Every generated destination exercised the shared policy guard; live plan/apply created five files, reapply returned `destination_exists`, and generated server Lua retained untrusted-client guidance | PASS |
 | 2026-08-09 | Manifest-driven API query | Explicit-manifest and zero-path discovery returned the current build and branch with live `ISPanel`/`OnClientCommand` evidence; conflicting location arguments exited 2 | PASS |
 | 2026-08-09 | Multiplayer mod preflight | A generated mod passed with no issues; an incomplete fixture returned server Lua and command-boundary findings with exit 1; a missing root returned typed exit 2 | PASS |
+| 2026-08-09 | Cross-platform quality matrix | Ubuntu and Windows both passed format, lint, type check, 25 tests, and nested Agent Skill validation | PASS |
+| 2026-08-09 | Multi-symbol evidence report | A live three-symbol report completed under one build/branch; a partial report retained found evidence and marked the missing claim with exit 1; invalid input exited 2 | PASS |
 
 ## Residual boundary
 
