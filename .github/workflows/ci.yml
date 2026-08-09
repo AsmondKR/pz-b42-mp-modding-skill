@@ -26,4 +26,4 @@ jobs:
       - name: Test
         run: pytest
       - name: Validate Agent Skill
-        run: agentskills validate .
+        run: agentskills validate "$GITHUB_WORKSPACE"
