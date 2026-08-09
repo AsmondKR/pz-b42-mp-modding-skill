@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import cast, final
 
 from pz_b42_mp_skill.discovery import DiscoveryError, discover
+from pz_b42_mp_skill.guard_paths import is_reparse
 
 _SYMBOL = re.compile(r"[A-Za-z_][A-Za-z0-9_.:]*\Z")
 _FUNCTION_DECLARATION = re.compile(
@@ -44,6 +45,7 @@ class ApiQueryErrorCode(StrEnum):
     DISCOVERY_FAILED = "discovery_failed"
     INVALID_LIMIT = "invalid_limit"
     INVALID_SYMBOL = "invalid_symbol"
+    LUA_PATH_LINKED = "lua_path_linked"
     LUA_ROOT_MISSING = "lua_root_missing"
     READ_FAILED = "read_failed"
     SYMBOL_NOT_FOUND = "symbol_not_found"
@@ -102,18 +104,30 @@ def find_symbol_evidence(
     if limit < 1:
         raise ApiQueryError(ApiQueryErrorCode.INVALID_LIMIT, str(limit))
     lua_root = install_root / "media" / "lua"
+    if install_root.is_symlink() or is_reparse(install_root):
+        raise ApiQueryError(ApiQueryErrorCode.LUA_PATH_LINKED, str(install_root))
+    if lua_root.is_symlink() or is_reparse(lua_root):
+        raise ApiQueryError(ApiQueryErrorCode.LUA_PATH_LINKED, str(lua_root))
     if not lua_root.is_dir():
         raise ApiQueryError(ApiQueryErrorCode.LUA_ROOT_MISSING, str(lua_root))
 
     matches: list[SymbolEvidence] = []
-    for path in sorted(lua_root.rglob("*.lua")):
-        if not path.is_file():
-            continue
+    for path in _safe_lua_files(lua_root):
         remaining = limit - len(matches)
         matches.extend(_scan_file(path, install_root, symbol)[:remaining])
         if len(matches) >= limit:
             break
     return tuple(matches)
+
+
+def _safe_lua_files(lua_root: Path) -> tuple[Path, ...]:
+    files: list[Path] = []
+    for path in sorted(lua_root.rglob("*")):
+        if path.is_symlink() or is_reparse(path):
+            raise ApiQueryError(ApiQueryErrorCode.LUA_PATH_LINKED, str(path))
+        if path.suffix.casefold() == ".lua" and path.is_file():
+            files.append(path)
+    return tuple(files)
 
 
 def resolve_query_target(

@@ -16,7 +16,7 @@ Exit codes:
 
 - `0`: every requested symbol has at least one exact source match
 - `1`: the report is valid but one or more symbols are explicitly `found: false`
-- `2`: discovery, identifier, limit, or Lua-root validation failed
+- `2`: discovery, identifier, limit, Lua-root, or linked-path validation failed
 
 ## Agent workflow
 

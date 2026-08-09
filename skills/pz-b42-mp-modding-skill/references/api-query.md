@@ -37,5 +37,6 @@ If the helper returns `symbol_not_found`, stop and report missing evidence. Do n
 - Query a single exact symbol at a time.
 - Use at most one of `--manifest` and `--install-root`; omitting both triggers conventional Steam discovery.
 - Use `--limit` to bound common references; the default is 100.
-- Invalid identifiers and missing Lua roots return typed JSON errors without creating files.
+- Invalid identifiers, missing Lua roots, and linked/reparse query paths return typed JSON errors without creating files.
+- A linked installation root, Lua root, directory entry, or Lua file stops the query with `lua_path_linked`; no partial evidence is returned.
 - Results are source locations, not generated API documentation.

@@ -21,6 +21,7 @@ Only observed evidence is recorded here.
 | 2026-08-09 | Multi-symbol evidence report | A live three-symbol report completed under one build/branch; a partial report retained found evidence and marked the missing claim with exit 1; invalid input exited 2 | PASS |
 | 2026-08-09 | Package metadata preflight | The generated package remained valid; an incomplete fixture reported missing Workshop fields/tags, mod description, server Lua, and command boundary with exit 1 | PASS |
 | 2026-08-09 | B41 layout migration preflight | A complete unversioned fixture returned only `build_42_directory_missing` and `legacy_unversioned_layout` while the B42 package remained valid | PASS |
+| 2026-08-09 | Linked Lua query refusal | A simulated reparse Lua file returned `lua_path_linked` before read; live single and partial batch queries retained their prior outputs and exit codes | PASS |
 
 ## Residual boundary
 

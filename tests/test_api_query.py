@@ -9,10 +9,17 @@ import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
-from pz_b42_mp_skill.api_query import EvidenceKind, find_symbol_evidence, main
+from pz_b42_mp_skill.api_query import (
+    ApiQueryError,
+    ApiQueryErrorCode,
+    EvidenceKind,
+    find_symbol_evidence,
+    main,
+)
 
 
 def check_equal(actual: object, expected: object) -> None:
@@ -143,6 +150,18 @@ class ApiQueryTest(unittest.TestCase):
         check_equal(document["branch"], "public")
         check_equal(document["install_root"], str(self.install_root.resolve()))
         check_equal(len(document["matches"]), 2)
+
+    def test_query_rejects_linked_or_reparse_source_paths(self) -> None:
+        """Stop before reading a Lua path flagged as a link or reparse point."""
+        with (
+            patch(
+                "pz_b42_mp_skill.api_query.is_reparse",
+                side_effect=lambda path: path.name == "ClientCommands.lua",
+            ),
+            pytest.raises(ApiQueryError) as captured,
+        ):
+            find_symbol_evidence(self.install_root, "OnClientCommand")
+        check_equal(captured.value.code, ApiQueryErrorCode.LUA_PATH_LINKED)
 
     def test_missing_lua_root_is_read_only_failure(self) -> None:
         """Reject a non-installation without creating any directories."""
