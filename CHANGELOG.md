@@ -11,3 +11,4 @@
 - Make the primary README Korean and remove private scenario details.
 - Add read-only installed Lua symbol evidence queries.
 - Isolate runtime skill assets from repository development files.
+- Re-authorize every scaffold destination through the shared mutation guard.

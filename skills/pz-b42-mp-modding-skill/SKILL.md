@@ -5,7 +5,7 @@ license: MIT
 compatibility: Works as an instruction-only Agent Skill on supported coding agents. Optional bundled helpers use Python 3.11+. Live multiplayer QA requires a local Project Zomboid Build 42 client or dedicated server.
 metadata:
   author: pz-b42-mp-modding-skill contributors
-  version: 0.4.0
+  version: 0.5.0
 ---
 
 # Project Zomboid Build 42 Multiplayer Modding
@@ -39,6 +39,7 @@ Read only the references required by the task:
 - Discovery is read-only.
 - Never write to the game installation, subscribed Workshop content, saves, logs, credentials, or active server directories.
 - Never overwrite or delete an existing file through bundled scripts.
+- Route every generated scaffold file through the shared destination policy guard.
 - Never follow a symlink, junction, or reparse point outside the approved workspace.
 - Never publish, deploy, restart a server, or call an external write API without separate explicit user approval.
 - When existing code must change, produce a reviewable patch and wait for approval before applying it.

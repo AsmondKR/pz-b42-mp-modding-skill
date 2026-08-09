@@ -9,6 +9,7 @@ import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from io import StringIO
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -33,6 +34,12 @@ def check_contains(needle: str, value: str) -> None:
     """Fail when text does not contain an expected value."""
     if needle not in value:
         pytest.fail(f"{needle!r} not found in {value!r}")
+
+
+def check_false(value: object) -> None:
+    """Fail when a value is truthy."""
+    if value:
+        pytest.fail(f"expected falsey value, received {value!r}")
 
 
 class ScaffoldTest(unittest.TestCase):
@@ -92,6 +99,26 @@ class ScaffoldTest(unittest.TestCase):
         check_equal(captured.value.code, GuardErrorCode.DESTINATION_EXISTS)
         check_equal(existing.read_text(encoding="utf-8"), "keep\n")
         check_equal(list(existing.parent.rglob("*.lua")), [])
+
+    def test_apply_routes_every_write_through_policy_authorization(self) -> None:
+        """Refuse the scaffold when the shared destination guard rejects it."""
+        plan = build_plan(self.policy, self.spec)
+        sentinel = self.root / "outside-sentinel.txt"
+        sentinel.write_text("unchanged\n", encoding="utf-8")
+        refusal = GuardError(GuardErrorCode.PATH_ESCAPE, "forced guard refusal")
+        with (
+            patch(
+                "pz_b42_mp_skill.guard_paths.authorize_destination",
+                side_effect=refusal,
+            ),
+            pytest.raises(GuardError) as captured,
+        ):
+            apply_plan(self.policy, plan)
+        check_equal(captured.value.code, GuardErrorCode.PATH_ESCAPE)
+        check_equal(sentinel.read_text(encoding="utf-8"), "unchanged\n")
+        check_false(
+            (self.workspace / "generated" / "ExampleMod" / "workshop.txt").exists(),
+        )
 
     def test_invalid_mod_identifier_is_rejected(self) -> None:
         """Reject identifiers that cannot safely become paths and Lua names."""

@@ -12,6 +12,8 @@ All discovery is read-only. A write is allowed only when every condition below h
 6. The destination does not already exist.
 7. The apply operation matches an unchanged, previously reviewed dry-run manifest.
 
+The scaffolder re-authorizes each generated file after creating its parent directories and immediately before exclusive file creation. A valid plan does not bypass the shared path, forbidden-root, Windows-name, symlink, junction, or reparse checks.
+
 ## Unconditional forbidden targets
 
 - Project Zomboid installation directories

@@ -11,6 +11,7 @@ from enum import StrEnum
 from pathlib import Path, PurePosixPath
 from typing import cast, final
 
+from pz_b42_mp_skill import guard_paths
 from pz_b42_mp_skill.mutation_guard import GuardError, GuardErrorCode, Policy
 
 _MOD_ID = re.compile(r"[A-Za-z][A-Za-z0-9_]{2,63}\Z")
@@ -182,8 +183,9 @@ def apply_plan(policy: Policy, plan: ScaffoldPlan) -> tuple[Path, ...]:
     created: list[Path] = []
     try:
         for relative, content in sorted(files.items()):
-            destination = policy.workspace_root / Path(relative)
-            destination.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+            lexical = policy.workspace_root / Path(relative)
+            lexical.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+            destination = guard_paths.authorize_destination(policy, relative)
             with destination.open("xb") as stream:
                 _ = stream.write(content)
                 stream.flush()
