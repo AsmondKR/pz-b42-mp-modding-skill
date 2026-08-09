@@ -76,7 +76,7 @@ class ScaffoldTest(unittest.TestCase):
         """Generate the expected B42 client/server/shared layout."""
         plan = ScaffoldPlan.from_json(build_plan(self.policy, self.spec).to_json())
         created = apply_plan(self.policy, plan)
-        mod_root = self.workspace / "generated" / "ExampleMod"
+        mod_root = (self.workspace / "generated" / "ExampleMod").resolve()
         expected = {
             mod_root / "workshop.txt",
             mod_root / "Contents/mods/ExampleMod/42/mod.info",

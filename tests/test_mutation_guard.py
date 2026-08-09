@@ -79,7 +79,7 @@ class MutationGuardTest(unittest.TestCase):
         """Create exactly one reviewed file."""
         manifest = self.guard.plan_create("generated/hello.txt", self.source)
         created = self.guard.apply_create(manifest, self.source)
-        check_equal(created, self.output / "hello.txt")
+        check_equal(created, (self.output / "hello.txt").resolve())
         check_equal(created.read_text(encoding="utf-8"), "hello from approved input\n")
         check_equal(manifest.destination, "generated/hello.txt")
 
