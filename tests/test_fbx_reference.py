@@ -126,8 +126,9 @@ class TestFbxProbePlanContract:
             check_equal(plan.samples, (sample,))
             if "--disable-autoexec" not in plan.command:
                 pytest.fail("probe command must disable Blend auto-execution")
-            if not any(value.endswith(str(fbx)) for value in plan.command):
-                pytest.fail("probe command must bind the resolved vanilla FBX")
+            expected_fbx = str(fbx.resolve())
+            if not any(value.endswith(expected_fbx) for value in plan.command):
+                pytest.fail(f"probe command must bind {expected_fbx!r}, received {plan.command!r}")
             check_equal(len(plan.command_sha256), 64)
 
     def test_rejects_sample_escape_and_non_fbx_paths(self) -> None:
