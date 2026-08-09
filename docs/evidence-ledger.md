@@ -12,6 +12,7 @@ Only observed evidence is recorded here.
 | 2026-08-09 | Refusal behavior | Existing mod root and malformed mod ID returned typed JSON errors with exit code 2 | PASS |
 | 2026-08-09 | npm-based installation | `npx skills add` copied skill version `0.2.0` into an isolated Codex project | PASS |
 | 2026-08-09 | Public-content privacy audit | No tracked queue scenario, local absolute path, or private fixture identifier remained | PASS |
+| 2026-08-09 | Installed Lua API query | Live `OnClientCommand` query classified local, assigned, and method functions plus event registration; malformed and absent symbols returned typed errors | PASS |
 
 ## Residual boundary
 

@@ -33,7 +33,7 @@ Do not assert any of these from memory:
 - automatic synchronization of arbitrary mod data;
 - B41 recipe, item, or timed-action signatures.
 
-Search installed source and record the exact file, symbol, and build. If no evidence is found, describe the limitation and design a tested fallback rather than inventing an API.
+Search installed source and record the exact relative file, line, symbol, and build. Use the read-only query workflow in `api-query.md` when the bundled helper is available. If no evidence is found, describe the limitation and design a tested fallback rather than inventing an API.
 
 ## External references
 

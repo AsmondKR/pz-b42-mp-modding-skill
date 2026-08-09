@@ -37,6 +37,7 @@ PZ Build 42 전용 멀티플레이 모드 구조를 설계해줘.
 스킬은 다음 원칙을 에이전트 작업 흐름에 적용합니다.
 
 - 설치된 Steam 빌드와 바닐라 Lua 근거를 먼저 확인
+- 이벤트, 함수, 클래스 근거를 설치된 Lua의 상대 경로와 줄 번호로 추출
 - 클라이언트, 서버, shared 코드의 책임 분리
 - 권한, 저장, 보상, 월드 상태 변경은 서버 권위로 처리
 - 승인된 작업공간 안에서만 신규 B42 모드 구조 생성
@@ -53,6 +54,7 @@ PZ Build 42 전용 멀티플레이 모드 구조를 설계해줘.
 
 - `SKILL.md`: 에이전트가 따르는 핵심 작업 절차
 - `references/source-of-truth.md`: Build 42 근거 우선순위
+- `references/api-query.md`: 설치된 Lua 심볼 근거 조회 규칙
 - `references/multiplayer-authority.md`: 서버 권위형 네트워크 설계
 - `references/safety-boundaries.md`: 파일 쓰기 승인 범위
 
