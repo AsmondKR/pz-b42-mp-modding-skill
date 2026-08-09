@@ -39,7 +39,7 @@ class DiscoveryTest(unittest.TestCase):
             '"AppState"\n{\n'
             '  "appid" "108600"\n'
             '  "installdir" "ProjectZomboid"\n'
-            '  "buildid" "24574865"\n'
+            '  "buildid" "12345678"\n'
             '  "UserConfig" { "BetaKey" "public" }\n'
             "}\n",
             encoding="utf-8",
@@ -48,7 +48,7 @@ class DiscoveryTest(unittest.TestCase):
     def test_discovers_build_install_and_verified_surfaces(self) -> None:
         """Return the build and three required vanilla evidence files."""
         result = discover_from_manifest(self.manifest, self.root / "Zomboid")
-        check_equal(result.build_id, "24574865")
+        check_equal(result.build_id, "12345678")
         check_equal(result.branch, "public")
         check_equal(result.install_root, self.install.resolve())
         check_equal(set(result.evidence), {"client_commands", "server_commands", "ui_panel"})

@@ -10,17 +10,9 @@ Project Zomboid modding documentation is incomplete and often mixes Build 41 wit
 4. **Maintained community implementations** tested on the same build.
 5. General model knowledge is useful for search terms, never as final proof.
 
-## Locally verified baseline
+## Verified surface examples
 
-Observed on 2026-08-09:
-
-- Steam app ID: `108600`
-- Steam branch: `public`
-- Steam build ID: `24574865`
-- Install root: `C:\Program Files (x86)\Steam\steamapps\common\ProjectZomboid`
-- User-data root: `C:\Users\123\Zomboid`
-
-Verified files and symbols:
+The repository baseline verified the following relative files and symbols against a local Build 42 installation. Agents must rediscover the active branch and build ID on the current user's machine and must not publish absolute local paths.
 
 | Surface | Local evidence |
 | --- | --- |

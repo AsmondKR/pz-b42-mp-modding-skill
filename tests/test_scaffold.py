@@ -59,8 +59,8 @@ class ScaffoldTest(unittest.TestCase):
         )
         self.policy = Policy.load(self.policy_path)
         self.spec = ScaffoldSpec(
-            mod_id="AdmissionQueue",
-            display_name="Admission Queue",
+            mod_id="ExampleMod",
+            display_name="Example Mod",
             author="Example Author",
             output_root="generated",
         )
@@ -69,22 +69,22 @@ class ScaffoldTest(unittest.TestCase):
         """Generate the expected B42 client/server/shared layout."""
         plan = ScaffoldPlan.from_json(build_plan(self.policy, self.spec).to_json())
         created = apply_plan(self.policy, plan)
-        mod_root = self.workspace / "generated" / "AdmissionQueue"
+        mod_root = self.workspace / "generated" / "ExampleMod"
         expected = {
             mod_root / "workshop.txt",
-            mod_root / "Contents/mods/AdmissionQueue/42/mod.info",
-            mod_root / "Contents/mods/AdmissionQueue/42/media/lua/client/AdmissionQueueClient.lua",
-            mod_root / "Contents/mods/AdmissionQueue/42/media/lua/server/AdmissionQueueServer.lua",
-            mod_root / "Contents/mods/AdmissionQueue/42/media/lua/shared/AdmissionQueueShared.lua",
+            mod_root / "Contents/mods/ExampleMod/42/mod.info",
+            mod_root / "Contents/mods/ExampleMod/42/media/lua/client/ExampleModClient.lua",
+            mod_root / "Contents/mods/ExampleMod/42/media/lua/server/ExampleModServer.lua",
+            mod_root / "Contents/mods/ExampleMod/42/media/lua/shared/ExampleModShared.lua",
         }
         check_equal(set(created), expected)
-        mod_info = (mod_root / "Contents/mods/AdmissionQueue/42/mod.info").read_text()
-        check_contains("id=AdmissionQueue", mod_info)
+        mod_info = (mod_root / "Contents/mods/ExampleMod/42/mod.info").read_text()
+        check_contains("id=ExampleMod", mod_info)
 
     def test_apply_refuses_existing_file_without_partial_overwrite(self) -> None:
         """Refuse an existing mod root and preserve its content."""
         plan = build_plan(self.policy, self.spec)
-        existing = self.workspace / "generated" / "AdmissionQueue" / "workshop.txt"
+        existing = self.workspace / "generated" / "ExampleMod" / "workshop.txt"
         existing.parent.mkdir(parents=True)
         existing.write_text("keep\n", encoding="utf-8")
         with pytest.raises(GuardError) as captured:

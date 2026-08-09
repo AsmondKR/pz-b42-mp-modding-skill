@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install quality tools
-        run: python -m pip install --disable-pip-version-check -e . ruff basedpyright skills-ref
+        run: python -m pip install --disable-pip-version-check -e . pytest ruff basedpyright skills-ref
       - name: Format
         run: ruff format --check .
       - name: Lint
@@ -24,6 +24,6 @@ jobs:
       - name: Type check
         run: basedpyright
       - name: Test
-        run: python -m unittest discover -s tests -v
+        run: pytest
       - name: Validate Agent Skill
         run: skills-ref validate .

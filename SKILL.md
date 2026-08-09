@@ -1,11 +1,11 @@
 ---
 name: pz-b42-mp-modding-skill
-description: Build, debug, validate, and package server-authoritative Project Zomboid Build 42 multiplayer mods. Use for B42 client/server/shared Lua, networking, persistence, UI overlays, dedicated servers, Workshop packaging, reconnect handling, permissions, admission queues, or migrating multiplayer mods from B41. Read-only by default; never modify game installs, Workshop subscriptions, saves, active server configuration, credentials, or third-party mods.
+description: Build, debug, validate, and package server-authoritative Project Zomboid Build 42 multiplayer mods. Use for B42 client/server/shared Lua, networking, persistence, UI overlays, dedicated servers, Workshop packaging, reconnect handling, permissions, or migrating multiplayer mods from B41. Read-only by default; never modify game installs, Workshop subscriptions, saves, active server configuration, credentials, or third-party mods.
 license: MIT
-compatibility: Requires Python 3.11+ for bundled safety and validation scripts. Live multiplayer QA requires a local Project Zomboid Build 42 client or dedicated server.
+compatibility: Works as an instruction-only Agent Skill on supported coding agents. Optional bundled helpers use Python 3.11+. Live multiplayer QA requires a local Project Zomboid Build 42 client or dedicated server.
 metadata:
   author: pz-b42-mp-modding-skill contributors
-  version: 0.1.0
+  version: 0.2.0
 ---
 
 # Project Zomboid Build 42 Multiplayer Modding
@@ -14,10 +14,10 @@ Build against verified Build 42 evidence, not model memory.
 
 ## Mandatory workflow
 
-1. Run `scripts/discover_pz.py` and record the installed build plus evidence roots.
+1. Inspect the local Steam manifest and vanilla Lua to record the installed build plus evidence roots. Use `scripts/discover_pz.py` when Python 3.11+ is available.
 2. Search installed vanilla Lua before naming an event, class, or function.
 3. Declare client, server, and shared responsibilities before editing.
-4. Keep permissions, persistence, admission, rewards, and state changes server-authoritative.
+4. Keep permissions, persistence, rewards, and state changes server-authoritative.
 5. Treat client commands as untrusted requests. Revalidate identity, permission, range, ownership, and current state on the server.
 6. Use only serialization-safe primitive values and tables across command boundaries.
 7. Scaffold new work in an approved workspace; never retrofit a B41 layout by assumption.
@@ -31,7 +31,6 @@ Read only the references required by the task:
 | --- | --- |
 | Decide whether an API claim is usable | `references/source-of-truth.md` |
 | Split client/server/shared code | `references/multiplayer-authority.md` |
-| Design the 32-active/40-connected queue | `references/priority-queue-capstone.md` |
 | Perform any write | `references/safety-boundaries.md` |
 
 ## Mutation safety
