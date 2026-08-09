@@ -5,7 +5,7 @@ license: MIT
 compatibility: Works as an instruction-only Agent Skill on supported coding agents. Optional bundled helpers use Python 3.11+. Live multiplayer QA requires a local Project Zomboid Build 42 client or dedicated server.
 metadata:
   author: pz-b42-mp-modding-skill contributors
-  version: 0.6.0
+  version: 0.7.0
 ---
 
 # Project Zomboid Build 42 Multiplayer Modding
@@ -21,7 +21,7 @@ Build against verified Build 42 evidence, not model memory.
 5. Treat client commands as untrusted requests. Revalidate identity, permission, range, ownership, and current state on the server.
 6. Use only serialization-safe primitive values and tables across command boundaries.
 7. Scaffold new work in an approved workspace; never retrofit a B41 layout by assumption.
-8. Validate structure and boundaries, then exercise the feature on a dedicated server.
+8. Run `scripts/validate_mod.py` against the new mod root, resolve every structural issue, then exercise the feature on a dedicated server.
 
 ## Progressive references
 
@@ -31,6 +31,7 @@ Read only the references required by the task:
 | --- | --- |
 | Decide whether an API claim is usable | `references/source-of-truth.md` |
 | Query installed Lua symbol evidence | `references/api-query.md` |
+| Preflight a multiplayer mod package | `references/mod-validation.md` |
 | Split client/server/shared code | `references/multiplayer-authority.md` |
 | Perform any write | `references/safety-boundaries.md` |
 

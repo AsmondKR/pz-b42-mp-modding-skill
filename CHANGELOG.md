@@ -13,3 +13,4 @@
 - Isolate runtime skill assets from repository development files.
 - Re-authorize every scaffold destination through the shared mutation guard.
 - Resolve Lua evidence queries directly from Steam manifests.
+- Add read-only Build 42 multiplayer mod package preflight.

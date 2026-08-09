@@ -38,6 +38,7 @@ PZ Build 42 전용 멀티플레이 모드 구조를 설계해줘.
 
 - 설치된 Steam 빌드와 바닐라 Lua 근거를 먼저 확인
 - Steam manifest에서 빌드 정보를 확인하고 이벤트, 함수, 클래스 근거를 상대 경로와 줄 번호로 추출
+- Build 42 패키지 구조와 client/server 명령 경계를 읽기 전용으로 사전 검사
 - 클라이언트, 서버, shared 코드의 책임 분리
 - 권한, 저장, 보상, 월드 상태 변경은 서버 권위로 처리
 - 승인된 작업공간 안에서만 신규 B42 모드 구조 생성
@@ -55,7 +56,7 @@ PZ Build 42 전용 멀티플레이 모드 구조를 설계해줘.
 ## 저장소 구성
 
 - `skills/pz-b42-mp-modding-skill/SKILL.md`: 에이전트가 따르는 핵심 작업 절차
-- `skills/pz-b42-mp-modding-skill/references/`: 설치되는 근거·권위·안전 지침
+- `skills/pz-b42-mp-modding-skill/references/`: 설치되는 근거·권위·안전·검증 지침
 - `tests/`: 배포 패키지 밖의 회귀 테스트
 - `docs/evidence-ledger.md`: 배포 패키지 밖의 검증 기록
 
