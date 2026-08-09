@@ -37,6 +37,9 @@ target-version = "py311"
 select = ["ALL"]
 ignore = ["COM812", "D203", "D213"]
 
+[tool.ruff.lint.isort]
+known-first-party = ["pz_b42_mp_skill"]
+
 [tool.basedpyright]
 typeCheckingMode = "all"
 pythonVersion = "3.11"
