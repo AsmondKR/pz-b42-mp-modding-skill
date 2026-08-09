@@ -26,7 +26,15 @@ Only observed evidence is recorded here.
 | 2026-08-09 | Read-only JSON schema contract | Live discovery, query, report, invalid preflight, and typed query error documents all declared top-level `schema_version: 1` | PASS |
 | 2026-08-09 | Workload-aware authority guidance | An agent scenario kept per-frame overlay work client-local, committed only the reward outcome on the server, and used a targeted rate-bounded cosmetic relay without global per-frame scans | PASS |
 | 2026-08-09 | Selective-authority relay boundary | An agent rejected client-claimed admin identity, attributed the relay from the event-provided player, required sanitization/relevance/rate controls, and refused to assume unverified vanilla protection | PASS |
+| 2026-08-09 | Blender asset contract quality | Ruff format and lint passed for 53 files, Basedpyright reported zero findings, all 41 tests passed, `git diff --check` passed, and version 0.16.0 built as wheel SHA-256 `97ef6220652369cc1f44c2a6b7abae6eedb1cbc969363bd3370cc41f6f8abe54` | PASS |
+| 2026-08-09 | Live Blender 5.1 validation | A real textured cube scene returned zero issues and `valid: true`; an unapplied, untextured scene returned transform, UV, material, and modifier issue codes with exit 1 and created no FBX | PASS |
+| 2026-08-09 | Live FBX export round trip | A reviewed export plan produced FBX 7400, reimport preserved mesh name, 12 triangles, one material, one UV layer, and unit bounds, and the final result returned `valid: true` | PASS |
+| 2026-08-09 | Blender output refusal | A second plan against the existing FBX returned typed `destination_exists` with exit 2; malformed asset ID input returned typed `asset_id_invalid` with exit 2 | PASS |
+| 2026-08-09 | Asset Agent Skill package | Nested `agentskills validate` and the runtime package-boundary test passed with the art, prompt, manifest, Blender plan, validation, and round-trip assets installed | PASS |
+| 2026-08-09 | Wheel Blender entry | Wheel inspection confirmed `pz_b42_mp_skill/blender_asset_script.py` is installed beside the launcher; the moved script completed a live Blender 5.1 validation with zero issues | PASS |
 
 ## Residual boundary
 
 The mutation guard blocks accidental outside-root writes, stale plans, overwrites, static symlink/junction/reparse escapes, and known protected PZ paths. Python path checks cannot eliminate a hostile concurrent ancestor-swap race on Windows. Hard adversarial isolation requires an ACL-protected workspace, VM, or container.
+
+The Blender gate proves generic scene quality and FBX round-trip fidelity, not universal Build 42 loader compatibility. Exact asset-class axes, skeletons, attachment transforms, texture contracts, and performance limits remain evidence-gated and require real in-game QA for each released asset.

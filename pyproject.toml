@@ -4,14 +4,16 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pz-b42-mp-modding-skill"
-version = "0.15.0"
-description = "Safety and validation tools for a Project Zomboid Build 42 multiplayer Agent Skill"
+version = "0.16.0"
+description = "Evidence, safety, and Blender asset tools for a Project Zomboid Build 42 Agent Skill"
 requires-python = ">=3.11"
 license = "MIT"
 dependencies = []
 
 [project.scripts]
 pz-skill-discover = "pz_b42_mp_skill.discovery:main"
+pz-skill-asset-manifest = "pz_b42_mp_skill.asset_manifest_cli:main"
+pz-skill-blender-plan = "pz_b42_mp_skill.blender_asset_cli:main"
 pz-skill-guard = "pz_b42_mp_skill.mutation_guard:main"
 pz-skill-query = "pz_b42_mp_skill.api_query:main"
 pz-skill-report = "pz_b42_mp_skill.evidence_report:main"

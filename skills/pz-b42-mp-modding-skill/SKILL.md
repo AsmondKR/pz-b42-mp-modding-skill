@@ -1,11 +1,11 @@
 ---
 name: pz-b42-mp-modding-skill
-description: Build, debug, validate, and package scalable, trust-aware Project Zomboid Build 42 multiplayer mods with selective server authority. Use for B42 client/server/shared Lua, networking, persistence, UI overlays, dedicated servers, Workshop packaging, reconnect handling, permissions, performance-sensitive authority design, or migrating multiplayer mods from B41. Read-only by default; never modify game installs, Workshop subscriptions, saves, active server configuration, credentials, or third-party mods.
+description: Build, debug, validate, and package scalable, trust-aware Project Zomboid Build 42 multiplayer mods and high-quality image assets, Blender models, and FBX exports. Use for B42 client/server/shared Lua, networking, persistence, UI, dedicated servers, Workshop packaging, art direction, Codex image prompts, Blender-authored assets, or FBX validation. Read-only by default; never modify game installs, Workshop subscriptions, saves, active server configuration, credentials, or third-party mods.
 license: MIT
-compatibility: Works as an instruction-only Agent Skill on supported coding agents. Optional bundled helpers use Python 3.11+. Live multiplayer QA requires a local Project Zomboid Build 42 client or dedicated server.
+compatibility: Works as an Agent Skill on supported coding agents. Optional bundled helpers use Python 3.11+. Blender asset inspection and FBX export require Blender 5.1+. Live multiplayer QA requires a local Project Zomboid Build 42 client or dedicated server.
 metadata:
   author: pz-b42-mp-modding-skill contributors
-  version: 0.15.0
+  version: 0.16.0
 ---
 
 # Project Zomboid Build 42 Multiplayer Modding
@@ -24,6 +24,20 @@ Machine-readable discovery, query, report, and validation documents declare `sch
 7. Scaffold new work in an approved workspace; never retrofit a B41 layout by assumption.
 8. Run `scripts/validate_mod.py` against the new mod root, resolve every structural issue, then exercise integrity and load behavior on a dedicated server at a representative player count and command rate.
 
+## Asset production workflow
+
+For images, models, textures, or FBX work:
+
+1. Inspect same-class installed Build 42 assets and separate verified game facts from project-selected quality budgets.
+2. Define one visual world and one approved asset brief with `references/asset-art-direction.md`.
+3. Produce copy/paste prompts with `references/codex-image-prompts.md`; the user generates images manually in the Codex app.
+4. Treat every generated image or mesh as an untrusted candidate. Record provenance and keep concept, orthographic, icon, and texture-reference roles distinct.
+5. Keep Blender authoritative for geometry, topology, UVs, materials, rigging, and FBX output. Never ship a prompt-generated mesh directly.
+6. Create one workspace-bound asset manifest, then run `scripts/validate_asset_manifest.py --policy <policy> --manifest <asset.json>`.
+7. Generate a hashed command with `scripts/plan_blender_asset.py validate --policy <policy> --manifest <asset.json>`. Review and execute that exact command; resolve every `PZ_ASSET_RESULT` issue.
+8. After human geometry and surface approval, generate and execute the `export` plan. The Blender script refuses weak scenes, creates no overwrite, reimports the FBX, and reports semantic drift.
+9. Wire the exact output hash through evidence-backed Build 42 paths, then perform in-game visual QA for every declared single-player and multiplayer context.
+
 ## Progressive references
 
 Read only the references required by the task:
@@ -35,6 +49,9 @@ Read only the references required by the task:
 | Collect several API claims together | `references/evidence-report.md` |
 | Preflight a multiplayer mod package | `references/mod-validation.md` |
 | Split client/server/shared code | `references/multiplayer-authority.md` |
+| Define a coherent mod asset set | `references/asset-art-direction.md` |
+| Write Codex app image prompts | `references/codex-image-prompts.md` |
+| Validate and export Blender FBX assets | `references/blender-fbx-pipeline.md` |
 | Perform any write | `references/safety-boundaries.md` |
 
 ## Mutation safety
@@ -45,6 +62,8 @@ Read only the references required by the task:
 - Route every generated scaffold file through the shared destination policy guard.
 - Never follow a symlink, junction, or reparse point outside the approved workspace.
 - Refuse linked or reparse-point Lua sources during evidence queries.
+- Authorize every Blender output through the same workspace policy immediately before export.
+- Never overwrite an FBX or silently repair, decimate, merge, unwrap, rig, or replace an authored asset.
 - Never publish, deploy, restart a server, or call an external write API without separate explicit user approval.
 - When existing code must change, produce a reviewable patch and wait for approval before applying it.
 
@@ -60,7 +79,7 @@ Read `references/safety-boundaries.md` before any write.
 
 ## Scope
 
-This skill covers Build 42 multiplayer Lua mods, networking, UI, persistence, permissions, reconnect handling, dedicated-server QA, and Workshop packaging. It does not cover Java core mods, maps, models, textures, animations, or B41 compatibility.
+This skill covers Build 42 multiplayer Lua mods, networking, UI, persistence, permissions, reconnect handling, dedicated-server QA, Workshop packaging, image-prompt handoff, Blender-authored models, texture references, and FBX quality gates. It does not cover Java core mods, maps, automatic image generation, automatic production-quality 3D generation, animation authoring, or B41 compatibility.
 
 ## Stop conditions
 
@@ -71,4 +90,7 @@ Stop and report the missing evidence instead of guessing when:
 - client/server execution context is ambiguous;
 - authority classification, synchronization frequency, or expected server cost is undefined;
 - dedicated-server QA cannot be run for a behavioral MP change;
+- a required asset-specific Build 42 constraint is unknown;
+- a human has not approved the art, geometry, surface, or in-game visual gate;
+- Blender validation or FBX round-trip comparison reports an issue;
 - a destination is outside the approved workspace or already exists.

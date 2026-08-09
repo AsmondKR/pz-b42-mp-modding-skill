@@ -54,6 +54,26 @@ UI와 로컬 표현은 클라이언트에 남겨 서버 부하가 인원수에 �
 
 `npx skills`는 `skills/pz-b42-mp-modding-skill` 전용 폴더만 설치합니다. 저장소의 CI, 테스트, 기여 문서와 내부 검증 기록은 에이전트 스킬에 포함되지 않습니다.
 
+## 이미지와 Blender FBX 에셋
+
+이 스킬은 이미지 생성 API를 호출하지 않습니다. 에이전트가 모드의 시각 세계와 에셋 brief를 작성하고, Codex 앱에 붙여 넣을 이미지 프롬프트를 출력합니다. 생성한 콘셉트, 아이콘, 정사영 reference와 texture reference는 사람이 검토한 뒤 Blender 제작에 사용합니다.
+
+Blender 5.1 이상이 설치되어 있으면 정책으로 승인된 작업공간 안에서 다음 단계를 사용할 수 있습니다.
+
+```bash
+python skills/pz-b42-mp-modding-skill/scripts/validate_asset_manifest.py \
+  --policy <workspace>/.pz-skill-policy.json \
+  --manifest <workspace>/asset.json
+
+python skills/pz-b42-mp-modding-skill/scripts/plan_blender_asset.py validate \
+  --policy <workspace>/.pz-skill-policy.json \
+  --manifest <workspace>/asset.json
+```
+
+두 번째 명령은 Blender를 바로 실행하지 않고 검토 가능한 명령 배열과 SHA-256을 출력합니다. 에이전트는 그 명령을 검토하고 정확히 실행합니다. `export` 계획은 scene 품질 검사를 통과해야 FBX를 신규 생성하며, 기존 FBX는 덮어쓰지 않습니다. 생성 직후 FBX를 Blender에 다시 불러와 mesh, UV, material, bounds와 armature 이름이 유지됐는지 검사합니다.
+
+자동 검사는 topology나 경로 결함을 찾을 수 있지만 미적 품질을 승인하지 않습니다. silhouette, 재질, deformation, PZ 카메라 가독성과 실제 게임 적합성은 사람의 Blender 검수와 Build 42 게임 내 QA가 필수입니다. Build 42에서 확인되지 않은 축, skeleton, texture 또는 성능 수치는 추측해서 고정하지 않습니다.
+
 ## 안전 범위
 
 포함된 도구는 Project Zomboid 설치 폴더, 구독한 Workshop 콘텐츠, 세이브, 자격증명, 운영 중인 서버 설정, 제3자 모드를 수정하지 않습니다. 쓰기 작업은 명시적으로 승인된 전용 작업공간 안에서만 허용되며 기존 대상이 있으면 중단합니다.
