@@ -74,6 +74,20 @@ python skills/pz-b42-mp-modding-skill/scripts/plan_blender_asset.py validate \
 
 자동 검사는 topology나 경로 결함을 찾을 수 있지만 미적 품질을 승인하지 않습니다. silhouette, 재질, deformation, PZ 카메라 가독성과 실제 게임 적합성은 사람의 Blender 검수와 Build 42 게임 내 QA가 필수입니다. Build 42에서 확인되지 않은 축, skeleton, texture 또는 성능 수치는 추측해서 고정하지 않습니다.
 
+### 실제 바닐라 FBX 크기·방향 근거
+
+전역 PZ 축이나 단위를 가정하지 않습니다. 설치된 Build 42에서 같은 역할의 바닐라 FBX를 선택하고 다음 명령으로 읽기 전용 분석 계획을 만듭니다.
+
+```bash
+python skills/pz-b42-mp-modding-skill/scripts/plan_pz_fbx_reference.py \
+  --sample held_open_razor=media/models_X/StraightRazor_Open.fbx \
+  --sample vehicle_normal=media/models_X/vehicles/Vehicles_CarNormal.fbx
+```
+
+계획은 Build ID, branch, Blender 경로와 정확한 파일을 SHA-256 명령으로 묶습니다. 실행 결과에는 FBX encoding, version, 축 metadata, unit metadata, raw 또는 Blender-imported bounds, triangle 수와 파일 hash가 포함되며 게임 설치에는 아무것도 쓰지 않습니다.
+
+public Build `24574865`의 shipped 표본에서는 `Front -X / Coord +Z`와 `Front +Z / Coord +X`가 동시에 발견됐고 unit metadata도 서로 달랐습니다. 따라서 `references/build-24574865-fbx-reference.md`의 값은 파일별 관측이며 universal exporter preset이 아닙니다. FBX bounds와 model-script `scale`을 곱해 runtime metre라고 주장하지 않습니다.
+
 ## 안전 범위
 
 포함된 도구는 Project Zomboid 설치 폴더, 구독한 Workshop 콘텐츠, 세이브, 자격증명, 운영 중인 서버 설정, 제3자 모드를 수정하지 않습니다. 쓰기 작업은 명시적으로 승인된 전용 작업공간 안에서만 허용되며 기존 대상이 있으면 중단합니다.

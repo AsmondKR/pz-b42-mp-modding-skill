@@ -25,3 +25,5 @@
 - Add Impeccable-inspired asset art direction and Codex app image-prompt handoff.
 - Add policy-bound Blender 5.1 scene validation, FBX export planning, and round-trip checks.
 - Accept Windows 8.3 path aliases without weakening link or reparse rejection.
+- Probe binary and ASCII vanilla FBX files for build-bound size and axis evidence.
+- Document five hashed Build 24574865 FBX observations and matching script transforms.

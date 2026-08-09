@@ -33,6 +33,11 @@ Classify each constraint as:
 One vanilla sample proves that one configuration exists. It does not prove a maximum or
 universal rule.
 
+For installed public Build `24574865`, begin with
+`build-24574865-fbx-reference.md`. Its five measurements are file-specific observations.
+Any Build ID, FBX hash, script hash, Blender version, or probe-version change invalidates
+that reference.
+
 ## Supported workflow profiles
 
 - `static_model`: non-rigged prop or world model;
@@ -57,6 +62,23 @@ unknown.
 7. Keep references outside the explicit export-object list.
 
 No downloaded or generated source is production-ready by origin.
+
+## Reference lock
+
+Before choosing scene scale or orientation:
+
+1. Run `scripts/plan_pz_fbx_reference.py` for an exact same-role vanilla FBX.
+2. Review and execute the emitted Blender command without editing it.
+3. Record build, branch, relative FBX path, file hash, encoding, FBX axes and units,
+   measurement space, bounds, and matching model-script transform.
+4. Import binary references into a clean Blender comparison scene and exclude them from
+   export.
+5. Keep raw/imported bounds, FBX unit metadata, Blender object scale, model-script
+   `scale`, attachment transforms, and `undoCoreScale` separate.
+
+Never multiply those values into runtime metres without an in-game measurement. Never
+copy one profile's front axis into another profile: current shipped observations already
+contain both `Front -X / Coord +Z` and `Front +Z / Coord +X`.
 
 ## Manifest
 
@@ -136,9 +158,10 @@ The launcher:
 9. compares object and mesh semantics;
 10. emits versioned JSON.
 
-The checked-in preset is a reviewable community baseline, not a universal B42 promise.
-Any asset-class evidence requiring different flags needs a separately named preset and
-tests.
+The checked-in preset is a reviewable project baseline, not a universal B42 promise.
+Observed source-file axes do not by themselves prove the game's required exporter flags.
+Any same-role evidence requiring different flags needs a separately named preset,
+round-trip tests, and matching-build in-game QA.
 
 ## Round-trip gate
 
@@ -159,7 +182,7 @@ export preset, then create a new FBX; never patch the exported file.
 ### Geometry
 
 - silhouette reads at the target PZ camera distance;
-- proportions and real scale match the approved brief;
+- proportions and comparison scale match the approved brief and exact vanilla reference;
 - bevels, thickness, intersections, and topology are intentional;
 - deformation topology supports required motion.
 

@@ -5,7 +5,7 @@ license: MIT
 compatibility: Works as an Agent Skill on supported coding agents. Optional bundled helpers use Python 3.11+. Blender asset inspection and FBX export require Blender 5.1+. Live multiplayer QA requires a local Project Zomboid Build 42 client or dedicated server.
 metadata:
   author: pz-b42-mp-modding-skill contributors
-  version: 0.16.0
+  version: 0.17.0
 ---
 
 # Project Zomboid Build 42 Multiplayer Modding
@@ -28,7 +28,7 @@ Machine-readable discovery, query, report, and validation documents declare `sch
 
 For images, models, textures, or FBX work:
 
-1. Inspect same-class installed Build 42 assets and separate verified game facts from project-selected quality budgets.
+1. Discover the installed Build 42 build, then probe an exact same-role vanilla FBX with `scripts/plan_pz_fbx_reference.py`. For Build `24574865`, read `references/build-24574865-fbx-reference.md`; for any other build, regenerate observations instead of inheriting its values.
 2. Define one visual world and one approved asset brief with `references/asset-art-direction.md`.
 3. Produce copy/paste prompts with `references/codex-image-prompts.md`; the user generates images manually in the Codex app.
 4. Treat every generated image or mesh as an untrusted candidate. Record provenance and keep concept, orthographic, icon, and texture-reference roles distinct.
@@ -51,6 +51,7 @@ Read only the references required by the task:
 | Split client/server/shared code | `references/multiplayer-authority.md` |
 | Define a coherent mod asset set | `references/asset-art-direction.md` |
 | Write Codex app image prompts | `references/codex-image-prompts.md` |
+| Establish FBX size and direction evidence | `references/build-24574865-fbx-reference.md` |
 | Validate and export Blender FBX assets | `references/blender-fbx-pipeline.md` |
 | Perform any write | `references/safety-boundaries.md` |
 
@@ -91,6 +92,7 @@ Stop and report the missing evidence instead of guessing when:
 - authority classification, synchronization frequency, or expected server cost is undefined;
 - dedicated-server QA cannot be run for a behavioral MP change;
 - a required asset-specific Build 42 constraint is unknown;
+- the installed Build ID or reference hash differs from the selected FBX observation;
 - a human has not approved the art, geometry, surface, or in-game visual gate;
 - Blender validation or FBX round-trip comparison reports an issue;
 - a destination is outside the approved workspace or already exists.

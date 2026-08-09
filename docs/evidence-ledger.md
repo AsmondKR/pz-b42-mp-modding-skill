@@ -33,6 +33,13 @@ Only observed evidence is recorded here.
 | 2026-08-09 | Asset Agent Skill package | Nested `agentskills validate` and the runtime package-boundary test passed with the art, prompt, manifest, Blender plan, validation, and round-trip assets installed | PASS |
 | 2026-08-09 | Wheel Blender entry | Wheel inspection confirmed `pz_b42_mp_skill/blender_asset_script.py` is installed beside the launcher; the moved script completed a live Blender 5.1 validation with zero issues | PASS |
 | 2026-08-09 | Windows short-path manifest | The CI failure was reproduced with an actual `BLC84F~1` alias; the fixed helper inspected link/reparse state independently of lexical workspace spelling, and the installed CLI accepted a real 8.3 alias without relaxing canonical containment | PASS |
+| 2026-08-09 | Installed vanilla FBX corpus | Public Build `24574865` contained 2,032 vanilla FBX files under `media`; Workshop and third-party paths were excluded before sampling | PASS |
+| 2026-08-09 | Build-bound FBX correlation | Five exact FBX paths were joined to same-build model declarations and file hashes for held, world, clothing-ground, iso-object, and vehicle roles | PASS |
+| 2026-08-09 | Live binary FBX probe | Blender 5.1 imported four shipped binary FBX 7400 files and emitted file hashes, axis/unit metadata, imported bounds, object scales, mesh names, and triangle counts without writing game files | PASS |
+| 2026-08-09 | Live ASCII vehicle probe | The shipped `Vehicles_CarNormal.fbx` was detected as ASCII, bypassed Blender's unsupported ASCII importer, and produced raw-array bounds for 532 vertices and 823 triangles with explicit measurement-space labeling | PASS |
+| 2026-08-09 | Non-universal axis evidence | The held razor observed `Front -X / Coord +Z` while four other samples observed `Front +Z / Coord +X`; the skill blocks universal axis and runtime-metre claims | PASS |
+| 2026-08-09 | Read-only FBX probe plan | The planner bound Build ID, branch, Blender 5.1, disabled auto-execution, exact canonical vanilla paths, and command SHA-256; path escape input returned typed exit 2 | PASS |
+| 2026-08-09 | FBX reference increment quality | Ruff format and lint passed for 62 files, Basedpyright reported zero findings, all 46 tests passed, Agent Skill validation passed, and version 0.17.0 built as wheel SHA-256 `7cf2f7bf857e7c2e274892d7a6db27f843cb52f742bc943755b95400208eec12` | PASS |
 
 ## Residual boundary
 
