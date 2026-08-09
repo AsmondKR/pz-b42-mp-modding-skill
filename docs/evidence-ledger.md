@@ -24,6 +24,8 @@ Only observed evidence is recorded here.
 | 2026-08-09 | Linked Lua query refusal | A simulated reparse Lua file returned `lua_path_linked` before read; live single and partial batch queries retained their prior outputs and exit codes | PASS |
 | 2026-08-09 | Strong evidence ranking | Live limit-2 queries returned event+function for `OnClientCommand` and class+function for `ISPanel`, preventing duplicate forms and references from hiding complementary proof | PASS |
 | 2026-08-09 | Read-only JSON schema contract | Live discovery, query, report, invalid preflight, and typed query error documents all declared top-level `schema_version: 1` | PASS |
+| 2026-08-09 | Workload-aware authority guidance | An agent scenario kept per-frame overlay work client-local, committed only the reward outcome on the server, and used a targeted rate-bounded cosmetic relay without global per-frame scans | PASS |
+| 2026-08-09 | Selective-authority relay boundary | An agent rejected client-claimed admin identity, attributed the relay from the event-provided player, required sanitization/relevance/rate controls, and refused to assume unverified vanilla protection | PASS |
 
 ## Residual boundary
 

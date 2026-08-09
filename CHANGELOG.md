@@ -21,3 +21,4 @@
 - Refuse linked or reparse-point Lua evidence paths.
 - Rank strong Lua evidence before applying result limits.
 - Version every read-only JSON success and error document.
+- Replace blanket server authority with a workload-aware selective authority model.
